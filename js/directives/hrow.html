@@ -1,0 +1,8 @@
+<div>
+	<td>{{ info.name }}</td>
+	<td><input type="number" ng-model="info.win"></td>
+	<td><input type="number" ng-model="info.lout"></td>
+	<td><input type="number" ng-model="info.lin"></td>
+	<td><input type="number" ng-model="info.wout"></td>
+	<td>{{ (info.wout - info.win) - (info.lin - info.lout) }}</td>
+</div>
