@@ -10,18 +10,27 @@ p, div {
 }
 /* end code for fonts */
 
-.jumbotron {
-	position: relative;
-	top: 0;
-	background-color: #333;
-	color: white;
-	border-radius: 0 !important;
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
-
 body > .container {
 	padding-top: 30px;
+}
+
+/********************\
+        Header
+\********************/
+header {
+	position: relative;
+	left:	0;
+	right:	0;
+	height: 50px;
+	padding: 0;
+	margin-bottom: 15px;
+	background-color: #CC0000;
+}
+
+header h2 {
+	line-height: 50px;
+	margin: 0;
+	color: white;
 }
 
 /********************\
@@ -29,9 +38,9 @@ body > .container {
 \********************/
 footer {
 	position: relative;
-	left: 0;
-	right: 0;
-	height: 50px;
+	left:	0;
+	right:	0;
+	height:	50px;
 	background-color: #333;
 	padding: 0;
 }
@@ -51,19 +60,19 @@ footer a {
 \********************/
 
 div.sideContent {
-	border: 3px solid #CC0000;
-	padding: 10px;
-	margin-bottom:10px;
-	padding-top: 0;
+	border:			3px solid #CC0000;
+	padding:		10px;
+	padding-top:	0;
+	margin-bottom: 10px;
 }
 .sideHeader {
 	background-color: #CC0000;
-	margin: 0;
-	margin-bottom:5px;
-	margin-left: -10px;
-	margin-right: -10px;
-	padding: 2px;
-	padding-bottom: 5px;
+	margin:			0;
+	margin-bottom:	5px;
+	margin-left:	-10px;
+	margin-right:	-10px;
+	padding:		2px;
+	padding-bottom:	5px;
 	color: white;
 }
 
@@ -95,17 +104,17 @@ div.sideContent {
 div.mainContent {
 	border: 3px solid #666;
 	padding: 10px;
-	margin-bottom:10px;
+	margin-bottom: 10px;
 	padding-top: 0;
 }
 
 .mainHeader {
 	background-color: #666;
-	margin: 0;
-	margin-bottom:5px;
-	margin-left: -10px;
-	margin-right: -10px;
-	padding: 2px;
-	padding-bottom: 5px;
+	margin:			0;
+	margin-bottom:	5px;
+	margin-left:	-10px;
+	margin-right:	-10px;
+	padding:		2px;
+	padding-bottom:	5px;
 	color: white;
 }

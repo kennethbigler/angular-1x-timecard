@@ -1,1 +1,16 @@
-[{"name":"Mon","win":8,"lout":12,"lin":12.5,"wout":16.5},{"name":"Tue","win":0,"lout":0,"lin":0,"wout":0},{"name":"Wed","win":0,"lout":0,"lin":0,"wout":0},{"name":"Thu","win":0,"lout":0,"lin":0,"wout":0},{"name":"Fri","win":0,"lout":0,"lin":0,"wout":0},{"name":"Sat","win":0,"lout":0,"lin":0,"wout":0},{"name":"Sun","win":0,"lout":0,"lin":0,"wout":0},{"name":"Mon","win":0,"lout":0,"lin":0,"wout":0},{"name":"Tue","win":0,"lout":0,"lin":0,"wout":0},{"name":"Wed","win":0,"lout":0,"lin":0,"wout":0},{"name":"Thu","win":0,"lout":0,"lin":0,"wout":0},{"name":"Fri","win":0,"lout":0,"lin":0,"wout":0},{"name":"Sat","win":0,"lout":0,"lin":0,"wout":0},{"name":"Sun","win":0,"lout":0,"lin":0,"wout":0}]
+[
+	{"name":"Mon","win":8,"lout":12,"lin":12.5,"wout":16.5},
+	{"name":"Tue","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Wed","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Thu","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Fri","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Sat","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Sun","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Mon","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Tue","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Wed","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Thu","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Fri","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Sat","win":0,"lout":0,"lin":0,"wout":0},
+	{"name":"Sun","win":0,"lout":0,"lin":0,"wout":0}
+]

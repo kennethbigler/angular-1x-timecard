@@ -33,18 +33,50 @@
 <body ng-app="myApp" ng-controller="MainController">
 
 <div class="container-fluid">
-    <!-- Header Area -->
-    <div class="jumbotron">
-        <h1>Hours</h1>
-    </div>
-    
+
 <!---------------------------------------------------------------------------------------->
     <!-- Main Body of the Website -->
     <div class="row">
+
+        <header class="header">
+            <div class="container-fluid">
+                <h2 style="display:inline;">My Timecard</h2>
+                <h2 class="pull-right">{{ date | date:'fullDate' }}</h2>
+            </div>
+        </header>
         
 <!---------------------------------------------------------------------------------------->
         <!-- Main Content -->
         <div class="col-md-10 col-sm-9">
+            <div class="mainContent">
+                <h3 class="mainHeader">Summary</h3>
+                <div class="form-group">
+                            <label class="control-label col-sm-2" for="payrate">Pay Rate ($/Hour)</label>
+                            <div class="col-sm-10">
+                                <input type="number" id="payrate" class="form-control" placeholder="10" ng-model="payrate">
+                            </div>
+                        </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Regular</th>
+                            <th>Overtime</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ total() - overtime() }}</td>
+                            <td>{{ overtime()           }}</td>
+                            <td>{{ total()              }}</td>
+                            <td>{{ payment()            }}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+                <!--<hrow info="x"></hrow>-->
+            </div>
             <!-- Begin About Section -->
         	<div class="mainContent">
                 <h3 class="mainHeader">Report Your Hours</h3>
@@ -69,35 +101,7 @@
                             <td class="phonehide">{{ (info.wout - info.win) - (info.lin - info.lout) }}</td>
                         </tr>
                     </tbody>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="payrate">Pay Rate ($/Hour)</label>
-                        <div class="col-sm-10">
-                            <input type="number" id="payrate" class="form-control" placeholder="10" ng-model="payrate">
-                        </div>
-                    </div>
                 </table>
-            </div>
-            <div class="mainContent">
-                <h3 class="mainHeader">Summary</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Regular</th>
-                            <th>Overtime</th>
-                            <th>Total</th>
-                            <th>Payment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ total() - overtime() }}</td>
-                            <td>{{ overtime()           }}</td>
-                            <td>{{ total()              }}</td>
-                            <td>{{ payment()            }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!--<hrow info="x"></hrow>-->
             </div>
         <!-- /Main Content -->
     	</div>
@@ -138,8 +142,7 @@
 <!---------------------------------------------------------------------------------------->
 <footer class="footer">
     <div class="container-fluid">
-        <p style="display:inline;">{{ date | date:'fullDate' }}</p>
-        <p style="float:right;"><a href="mailto:kennethbigler@gmail.com?subject=Feedback">Feedback</a></p>
+        <p class="pull-right"><a href="mailto:kennethbigler@gmail.com?subject=Feedback">Feedback</a></p>
     </div>
 </footer>
 
