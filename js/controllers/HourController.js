@@ -30,6 +30,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 			//console.log($scope.tsla);
 	});
 
+	$scope.payrate = 28;
 	$scope.date = new Date();
 	//console.log($scope.date);
 
@@ -50,6 +51,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		$http.post('php/setdata.php', JSON.stringify($scope.hours))
 		.error(function(status){console.log(status)});
 		//console.log("postpost");
+		alert("Hours Saved");
 	};
 
 	$scope.total = function() {
@@ -83,4 +85,11 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		}
 		return overtime;
 	};
+
+	$scope.payment = function() {
+		//total returns (regular + overtime)
+		//overtime returns (overtime) but since it is double counted
+		// Overtime should be 1.5x pay, so I added Overtime x 0.5
+		return (($scope.total() * 1) + ($scope.overtime() * 0.5)) * $scope.payrate;
+	}
 }]);
