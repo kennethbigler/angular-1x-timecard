@@ -66,9 +66,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ total() - overtime() }} hours</td>
-                            <td>{{ overtime()           }} hours</td>
-                            <td>{{ total()              }} hours</td>
+                            <td>{{ total() - overtime() | number:2 | number }} hours</td>
+                            <td>{{ overtime()           | number:2 | number }} hours</td>
+                            <td>{{ total()              | number:2 | number }} hours</td>
                         </tr>
                     </tbody>
                     <thead>
@@ -80,9 +80,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td> ${{ grosspay() | number:2              }}</td>
-                            <td>~${{ paycheck() | number:2              }}</td>
-                            <td>~${{ grosspay() - paycheck() | number:2 }}</td>
+                            <td>${{ grosspay() | number:2   | number   }}</td>
+                            <td>${{ paycheck() | number:2              }}</td>
+                            <td>${{ grosspay() - paycheck() | number:2 }}</td>
                         </tr>
                     </tbody>
 
@@ -110,7 +110,7 @@
                             <td><input type="time" class="form-control" name="input" ng-model="info.lout" placeholder="HH:mm:ss"/></td>
                             <td><input type="time" class="form-control" name="input" ng-model="info.lin" placeholder="HH:mm:ss"/></td>
                             <td><input type="time" class="form-control" name="input" ng-model="info.wout" placeholder="HH:mm:ss"/></td>
-                            <td class="phonehide">{{ ((info.wout - info.win) - (info.lin - info.lout)) / 3600000 }}</td>
+                            <td class="phonehide">{{ ((info.wout - info.win) - (info.lin - info.lout)) / 3600000 | number:2 | number }}</td>
                         </tr>
                     </tbody>
                 </table>
