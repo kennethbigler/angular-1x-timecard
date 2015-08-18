@@ -13,11 +13,13 @@ app.factory('quote', ['$http', function($http) {
 }]);
 
 app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $http, quote) {
+	// prepare data object for tesla stock quote
 	$scope.tsla = {
 		total: 0,
 		change: 0,
 		color: {"color":"green"}
 	}
+	// get data from web for tesla stock quote
 	quote.success(function(data) {
 		//console.log(data);
 		$scope.tsla.total = data.query.results.quote.LastTradePriceOnly;
@@ -30,20 +32,22 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 			//console.log($scope.tsla);
 	});
 
+	// set the default payrate
 	$scope.payrate = 28;
+	// get today's date
 	$scope.date = new Date();
 	//console.log($scope.date);
 
-	/*
-	Required Format: 2014-03-08T00:00:00
-	Server Format:   1970-01-01T20:00:00.000Z
-	*/
+	/* Required Format: 2014-03-08T00:00:00
+	 * Server Format:   1970-01-01T20:00:00.000Z
+	 * This function prepares the data by trimming data
+	 * then putting data in the proper format
+	 */
 	$scope.loadHours = function() {
 		$http.get("php/getdata.php")
 		.success(function (data) {
 			//console.log($scope.hours);
 			for (var i = data.length - 1; i >= 0; i--) {
-				//data[i].win = data[i].win.substring(0, data[i].win.length - 4);
 				data[i].win.slice(0,-5);
 				data[i].lout.slice(0,-5);
 				data[i].lin.slice(0,-5);
@@ -52,7 +56,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 				data[i].lout = new Date(data[i].lout);
 				data[i].lin = new Date(data[i].lin);
 				data[i].wout = new Date(data[i].wout);
-				console.log(data[i]);
+				//console.log(data[i]);
 			};
 			$scope.hours = data;
 			//console.log($scope.hours);
@@ -62,6 +66,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 	};
 	$scope.loadHours();
 
+	//This function saves the hours to a text document on the server
 	$scope.httpPost = function() {
 		//console.log("prepost");
 		$http.post('php/setdata.php', JSON.stringify($scope.hours))
@@ -70,6 +75,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		alert("Hours Saved");
 	};
 
+	//This function resets the data then saves the cleared data to the server
 	$scope.clearHours = function() {
 		//reset all of the values
 		var clear = new Date("1970-01-01T08:00:00");
@@ -85,6 +91,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		alert("Hours Cleared and Saved");
 	};
 
+	//This function iterates through the data and calculates the total hours logged
 	$scope.total = function() {
 		var total = 0;
 		for (var i = $scope.hours.length - 1; i >= 0; i--) {
@@ -98,6 +105,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		return total;
 	};
 
+	//This function calculates overtime based on CA State Law
 	$scope.overtime = function() {
 		var overtime = 0;
 		var temp = 0;
@@ -128,6 +136,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		return overtime;
 	};
 
+	//This function calculates grosspay for Tesla Motors
 	$scope.grosspay = function() {
 		//total returns (regular + overtime)
 		//overtime returns (overtime) but since it is double counted
@@ -135,9 +144,11 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		return (($scope.total() * 1) + ($scope.overtime() * 0.5)) * $scope.payrate;
 	};
 
+	//This function calculates aproximate tax for CA employee in lower brackets
 	$scope.paycheck = function() {
 		//I put 4% towards my 401k as is the default for Tesla
-		//as calculated online, paycheck is ~74% of gross pay after 401k
+		//as calculated online, paycheck is ~78% - 4% (401k) of gross pay
+		//total ~74% of paycheck
 		return ($scope.grosspay() * 0.74);
 	};
 }]);
