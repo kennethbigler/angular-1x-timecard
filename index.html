@@ -41,7 +41,7 @@
         <header class="header">
             <div class="container-fluid">
                 <h2 style="display:inline;">My Timecard</h2>
-                <h2 class="pull-right">{{ date | date:'fullDate' }}</h2>
+                <h2 class="pull-right phonehide">{{ date | date:'fullDate' }}</h2>
             </div>
         </header>
         
@@ -97,8 +97,8 @@
                         <tr>
                             <th>Day</th>
                             <th>Arrive</th>
-                            <th>Lunch Start</th>
-                            <th>Lunch End</th>
+                            <th class="phonehide">Lunch Start</th>
+                            <th class="phonehide">Lunch End</th>
                             <th>Depart</th>
                             <th class="phonehide">Total</th>
                         </tr>
@@ -107,8 +107,8 @@
                         <tr ng-repeat="info in hours track by $index">
                             <td>{{ info.name }}</td>
                             <td><input type="time" class="form-control" name="input" ng-model="info.win" placeholder="HH:mm:ss"/></td>
-                            <td><input type="time" class="form-control" name="input" ng-model="info.lout" placeholder="HH:mm:ss"/></td>
-                            <td><input type="time" class="form-control" name="input" ng-model="info.lin" placeholder="HH:mm:ss"/></td>
+                            <td class="phonehide"><input type="time" class="form-control" name="input" ng-model="info.lout" placeholder="HH:mm:ss"/></td>
+                            <td class="phonehide"><input type="time" class="form-control" name="input" ng-model="info.lin" placeholder="HH:mm:ss"/></td>
                             <td><input type="time" class="form-control" name="input" ng-model="info.wout" placeholder="HH:mm:ss"/></td>
                             <td class="phonehide">{{ ((info.wout - info.win) - (info.lin - info.lout)) / 3600000 | number:2 | number }}</td>
                         </tr>
@@ -126,7 +126,7 @@
             <button ng-click="httpPost()" class="btn btn-danger btn-lg btn-block">Save Hours</button>
 
             <!-- Quicklinks -->
-            <div class="sideContent">
+            <div  class="phonehide sideContent">
             	<h3 class="sideHeader">Quicklinks</h3>
               	<ul>
                     <li><a href="http://www.teslamotors.com/">Tesla Motors</a></li>
@@ -134,7 +134,7 @@
             <!-- /Quicklinks -->
             </div>
             <!-- Code for Stock Quote -->
-            <div class="sideContent">
+            <div class="phonehide sideContent">
                 <h3 class="sideHeader"><a href="http://quote.yahoo.com/q?s=TSLA&amp;d=1d">Tesla Stock Quote</a></h3>
                 <div class="minilink" align="center">
                 Tesla Stock Quote: <b>${{ tsla.total | number:2 }}</b>&nbsp;&nbsp;(<span ng-style='tsla.color'><b>{{ tsla.change | number:2 }}</b></span>)
