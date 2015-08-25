@@ -66,23 +66,23 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{ total      | number:2 | number }} hours</td>
-                            <td>{{ overtime() | number:2 | number }} hours</td>
-                            <td>{{ total      | number:2 | number }} hours</td>
+                            <td>{{ regular     | number:2 | number }} hours</td>
+                            <td>{{ overtime    | number:2 | number }} hours</td>
+                            <td>{{ calculate() | number:2 | number }} hours</td>
                         </tr>
                     </tbody>
                     <thead>
                         <tr>
-                            <th>Gross Pay</th>
                             <th>Paycheck</th>
                             <th>Taxes</th>
+                            <th>Gross Pay</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>${{ paycheck()       | number:2 }}</td>
-                            <td>${{ payment.paycheck | number:2 }}</td>
-                            <td>${{ payment.tax      | number:2 }}</td>
+                            <td>${{ pay.paycheck | number:2 }}</td>
+                            <td>${{ pay.tax      | number:2 }}</td>
+                            <td>${{ pay.gross    | number:2 }}</td>
                         </tr>
                     </tbody>
 

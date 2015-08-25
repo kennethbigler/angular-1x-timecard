@@ -102,19 +102,29 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 	};
 
 
+	$scope.pay = {
+		gross: 0,
+		paycheck: 0,
+		tax: 0
+	}
+	$scope.overtime = 0;
+	$scope.regular = 0;
 
-	$scope.total = 0;
 	//This function calculates:
 	//    the total hours worked and stores it in a global variable
 	//    overtime based on CA State Law and returns that value
-	$scope.overtime = function() {
+	//    grosspay based on payrate
+	//    aproximate tax for CA employee in lower brackets
+	$scope.calculate = function() {
 
-		var overtime = 0;
 		var temp = 0;
 		var days = 0;
 		var workdays = 0;
+		var total = 0;
 
-		$scope.total = 0;
+		$scope.overtime = 0;
+		$scope.regular = 0;
+
 		for (var i = $scope.hours.length - 1; i >= 0; i--) {
 			temp = ($scope.hours[i].wout - $scope.hours[i].win) - ($scope.hours[i].lin - $scope.hours[i].lout);
 			// compensate for minutes      (/ 60)
@@ -124,7 +134,7 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 			temp = temp / 3600000;
 
 			//calculate total
-			$scope.total += temp;
+			total += temp;
 
 			//calculate overtime
 			days = days + 1;
@@ -132,43 +142,34 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 				workdays += 1;
 			}
 			if (workdays > 6) {
-				overtime += temp;
-			}
-			if (temp > 8 && temp <= 12) {
-				overtime += (temp - 8);
-			}
-			if (temp > 12) {
-				overtime += 4;
-				overtime += (temp - 12) * (4/3);
+				$scope.overtime += temp;
 			}
 			if (days == 7) {
 				workdays = 0;
 			}
+			if (temp <= 8) {
+				$scope.regular += temp;
+			}
+			else if (temp > 8 && temp <= 12) {
+				$scope.overtime += (temp - 8);
+				$scope.regular += 8;
+			}
+			else if (temp > 12) {
+				$scope.overtime += 4;
+				$scope.overtime += (temp - 12) * (4/3);
+				$scope.regular += 8;
+			}
 		}
-		return overtime;
-	};
 
-
-
-	$scope.payment = {
-		gross: 0,
-		paycheck: 0,
-		tax: 0
-	}
-
-	//This function calculates grosspay for Tesla Motors,
-	//as well as aproximate tax for CA employee in lower brackets
-	$scope.paycheck = function() {
-		//total returns (regular + overtime)
-		//overtime returns (overtime) but since it is double counted
 		// Overtime should be 1.5x pay, so I added Overtime x 0.5
-		$scope.payment.gross = (($scope.total * 1) + ($scope.overtime() * 0.5)) * $scope.payrate;
+		$scope.pay.gross = ((total * 1) + ($scope.overtime * 0.5)) * $scope.payrate;
 		//I put 4% towards my 401k as is the default for Tesla
 		//as calculated online, paycheck is ~78% - 4% (401k) of gross pay
 		//total ~74% of paycheck
-		$scope.payment.paycheck = $scope.payment.gross * 0.74;
-		$scope.payment.tax = $scope.payment.gross * 0.26;
-		return $scope.payment.gross;
+		$scope.pay.paycheck = $scope.pay.gross * 0.74;
+		$scope.pay.tax = $scope.pay.gross * 0.26;
+
+		return total;
 	};
 
 
