@@ -12,13 +12,17 @@ app.factory('quote', ['$http', function($http) {
 		});
 }]);
 
+
+
 app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $http, quote) {
+
 	// prepare data object for tesla stock quote
 	$scope.tsla = {
 		total: 0,
 		change: 0,
 		color: {"color":"green"}
 	}
+
 	// get data from web for tesla stock quote
 	quote.success(function(data) {
 		//console.log(data);
@@ -31,6 +35,8 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 			};
 			//console.log($scope.tsla);
 	});
+
+
 
 	// set the default payrate
 	$scope.payrate = 28;
@@ -66,6 +72,8 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 	};
 	$scope.loadHours();
 
+
+
 	//This function saves the hours to a text document on the server
 	$scope.httpPost = function() {
 		//console.log("prepost");
@@ -74,6 +82,8 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		//console.log("postpost");
 		alert("Hours Saved");
 	};
+
+
 
 	//This function resets the data then saves the cleared data to the server
 	$scope.clearHours = function() {
@@ -91,26 +101,20 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		alert("Hours Cleared and Saved");
 	};
 
-	//This function iterates through the data and calculates the total hours logged
-	$scope.total = function() {
-		var total = 0;
-		for (var i = $scope.hours.length - 1; i >= 0; i--) {
-			total += ($scope.hours[i].wout - $scope.hours[i].win) - ($scope.hours[i].lin - $scope.hours[i].lout);
-		}
-		// compensate for minutes      (/ 60)
-		// compensate for seconds 	   (/ 60)
-		// compensate for milliseconds (/ 1,000)
-		// total                       (/ 3,600,000)
-		total = total / 3600000;
-		return total;
-	};
 
-	//This function calculates overtime based on CA State Law
+
+	$scope.total = 0;
+	//This function calculates:
+	//    the total hours worked and stores it in a global variable
+	//    overtime based on CA State Law and returns that value
 	$scope.overtime = function() {
+
 		var overtime = 0;
 		var temp = 0;
 		var days = 0;
 		var workdays = 0;
+
+		$scope.total = 0;
 		for (var i = $scope.hours.length - 1; i >= 0; i--) {
 			temp = ($scope.hours[i].wout - $scope.hours[i].win) - ($scope.hours[i].lin - $scope.hours[i].lout);
 			// compensate for minutes      (/ 60)
@@ -119,15 +123,23 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 			// total                       (/ 3,600,000)
 			temp = temp / 3600000;
 
+			//calculate total
+			$scope.total += temp;
+
+			//calculate overtime
 			days = days + 1;
 			if (temp > 0) {
 				workdays += 1;
 			}
-			if (workdays > 5) {
+			if (workdays > 6) {
 				overtime += temp;
 			}
-			if (temp > 8) {
+			if (temp > 8 && temp <= 12) {
 				overtime += (temp - 8);
+			}
+			if (temp > 12) {
+				overtime += 4;
+				overtime += (temp - 12) * (4/3);
 			}
 			if (days == 7) {
 				workdays = 0;
@@ -136,19 +148,29 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 		return overtime;
 	};
 
-	//This function calculates grosspay for Tesla Motors
-	$scope.grosspay = function() {
+
+
+	$scope.payment = {
+		gross: 0,
+		paycheck: 0,
+		tax: 0
+	}
+
+	//This function calculates grosspay for Tesla Motors,
+	//as well as aproximate tax for CA employee in lower brackets
+	$scope.paycheck = function() {
 		//total returns (regular + overtime)
 		//overtime returns (overtime) but since it is double counted
 		// Overtime should be 1.5x pay, so I added Overtime x 0.5
-		return (($scope.total() * 1) + ($scope.overtime() * 0.5)) * $scope.payrate;
-	};
-
-	//This function calculates aproximate tax for CA employee in lower brackets
-	$scope.paycheck = function() {
+		$scope.payment.gross = (($scope.total * 1) + ($scope.overtime() * 0.5)) * $scope.payrate;
 		//I put 4% towards my 401k as is the default for Tesla
 		//as calculated online, paycheck is ~78% - 4% (401k) of gross pay
 		//total ~74% of paycheck
-		return ($scope.grosspay() * 0.74);
+		$scope.payment.paycheck = $scope.payment.gross * 0.74;
+		$scope.payment.tax = $scope.payment.gross * 0.26;
+		return $scope.payment.gross;
 	};
+
+
+
 }]);
