@@ -10,6 +10,14 @@ p, div {
 }
 /* end code for fonts */
 
+/********************\
+        Global
+\********************/
+
+body {
+	background-color: #FAFAFA;
+}
+
 body > .container {
 	padding-top: 30px;
 }
@@ -67,6 +75,7 @@ div.sideContent {
 	padding:		10px;
 	padding-top:	0;
 	margin-bottom:	10px;
+	background-color: #FFF;
 	-webkit-box-shadow: .0625em .3125em .625em #888;
        -moz-box-shadow: .0625em .3125em .625em #888;
     		box-shadow: .0625em .3125em .625em #888;
@@ -115,6 +124,7 @@ div.mainContent {
 	padding: 10px;
 	margin-bottom: 10px;
 	padding-top: 0;
+	background-color: #FFF;
 	-webkit-box-shadow: .0625em .3125em .625em #888;
        -moz-box-shadow: .0625em .3125em .625em #888;
     		box-shadow: .0625em .3125em .625em #888;

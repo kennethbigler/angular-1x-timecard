@@ -14,79 +14,79 @@ app.factory('quote', ['$http', function($http) {
 
 
 
-app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $http, quote) {
+// old functions require '$http' to be passed in as well, replaced by '$cookies'
+app.controller('MainController', ['$scope', '$cookies', 'quote', function($scope, $cookies, quote) {
 
-// --------------------------------------     IO     -------------------------------------------- //
+// --------------------------------------     IO    -------------------------------------------- //
 
-	/* Required Format: 2014-03-08T00:00:00
-	 * Server Format:   1970-01-01T20:00:00.000Z
-	 * This function prepares the data by:
-	 *	trimming last 5 characters from data ('.000Z')
-	 *	putting data in the proper Date format (rather than string)
-	 */
-	$scope.loadHours = function() {
-		$http.get("php/getdata.php")
-		.success(function (data) {
-			//console.log($scope.hours);
-			for (var i = data.length - 1; i >= 0; i--) {
-				data[i].win.slice(0,-5);
-				data[i].win = new Date(data[i].win);
-				data[i].lout.slice(0,-5);
-				data[i].lout = new Date(data[i].lout);
-				data[i].lin.slice(0,-5);
-				data[i].lin = new Date(data[i].lin);
-				data[i].wout.slice(0,-5);
-				data[i].wout = new Date(data[i].wout);
-				//console.log(data[i]);
-			};
-			$scope.hours = data;
-			//console.log($scope.hours);
-		}).error(function () {
-			alert("An unexpected error ocurred!");
-		});
-	};
-	$scope.loadHours();
+	var hours	= $cookies.getObject('hours');
+	var payrate = $cookies.getObject('payrate');
+	var k401 	= $cookies.getObject('k401');
 
-
-
-	//This function saves the hours to a text document on the server
-	$scope.httpPost = function() {
-		//console.log("prepost");
-		$http.post('php/setdata.php', JSON.stringify($scope.hours))
-		.error(function(status){console.log(status)});
-		//console.log("postpost");
-		alert("Hours Saved");
+	if (hours) {
+		/* Required Format: 2014-03-08T00:00:00
+		 * Server Format:   1970-01-01T20:00:00.000Z
+		 * This function prepares the data by:
+		 *  - trimming last 5 characters from data ('.000Z')
+		 *  - putting data in the proper Date format (rather than string)
+		 */
+		for (var i = hours.length - 1; i >= 0; i--) {
+			hours[i].win.slice(0,-5);
+			hours[i].win  = new Date(hours[i].win);
+			hours[i].lout.slice(0,-5);
+			hours[i].lout = new Date(hours[i].lout);
+			hours[i].lin.slice(0,-5);
+			hours[i].lin  = new Date(hours[i].lin);
+			hours[i].wout.slice(0,-5);
+			hours[i].wout = new Date(hours[i].wout);
+			//console.log(hours[i]);
+		};
+		//console.log(hours);
+	} else {
+		// if there was no hours data fill with default values
+		//console.log(window.hours);
+		hours = window.hours;
+		//console.log(hours);
 	};
 
-// ---------------------------------     Prep Data     ------------------------------------------ //
+	if (!payrate) {
+		payrate = 10;
+	}
+	if (!k401) {
+		k401 = 4;
+	}
 
-	//This function resets the data then saves the cleared data to the server
+	// set model to variables usable by the view
+	$scope.hours	= hours;
+	$scope.payrate	= payrate;
+	$scope.k401		= k401;
+
+// ---------------------------------     IO Functions    --------------------------------------- //
+
 	$scope.clearHours = function() {
-		//reset all of the values
-		var clear = new Date("1970-01-01T08:00:00");
-		for (var i = $scope.hours.length - 1; i >= 0; i--) {
-			$scope.hours[i].wout = clear;
-			$scope.hours[i].win = clear;
-			$scope.hours[i].lin = clear;
-			$scope.hours[i].lout = clear;
-		}
-		//post to the server
-		$http.post('php/setdata.php', JSON.stringify($scope.hours))
-		.error(function(status){console.log(status)});
-		alert("Hours Cleared and Saved");
+		$cookies.remove('hours');
+		window.location.reload();
 	};
 
+	$scope.saveHours = function() {
+		$cookies.putObject('hours', $scope.hours);
+		$cookies.putObject('payrate', $scope.payrate);
+		$cookies.putObject('k401', $scope.k401);
+		console.log("hours saved");
+	}
+
+	
 // --------------------------------     Calculations     ---------------------------------------- //
 
-	// set the default payrate
-	$scope.payrate = 28;
 	//Global variables manipulated in the calculate function, used in view
-	$scope.overtime = 0;
-	$scope.regular = 0;
 	$scope.pay = {
-		gross: 0,
-		paycheck: 0,
-		tax: 0
+		overtime:	0,
+		regular:	0,
+		taxh:		0,
+		gross:		0,
+		paycheck:	0,
+		tax:		0,
+		k401:		0
 	}
 
 	/*This function calculates:
@@ -97,13 +97,13 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 	 */
 	$scope.calculate = function() {
 
-		var temp = 0;
-		var days = 0;
+		var temp	 = 0;
+		var days	 = 0;
 		var workdays = 0;
-		var total = 0;
+		var total	 = 0;
 
-		$scope.overtime = 0;
-		$scope.regular = 0;
+		$scope.pay.overtime	= 0;
+		$scope.pay.regular	= 0;
 
 		for (var i = 0; i < $scope.hours.length; i++) {
 			temp = ($scope.hours[i].wout - $scope.hours[i].win) - ($scope.hours[i].lin - $scope.hours[i].lout);
@@ -132,10 +132,10 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 				if (workdays == 7) {
 					workdays = 0;
 					if (temp > 8) {
-						$scope.overtime += (temp - 8) * (4/3);
-						$scope.overtime += 8;
+						$scope.pay.overtime += (temp - 8) * (4/3);
+						$scope.pay.overtime += 8;
 					} else {
-						$scope.overtime += temp;
+						$scope.pay.overtime += temp;
 					}
 				}
 				workdays = 0;
@@ -149,24 +149,27 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 			 *	All else is regular time
 			 */
 			if (temp <= 8 && temp != 0) {
-				$scope.regular += temp;
+				$scope.pay.regular += temp;
 			} else if (temp > 8 && temp <= 12) {
-				$scope.overtime += (temp - 8);
-				$scope.regular += 8;
+				$scope.pay.overtime += (temp - 8);
+				$scope.pay.regular += 8;
 			} else if (temp > 12) {
-				$scope.overtime += 4;
-				$scope.overtime += (temp - 12) * (4/3);
-				$scope.regular += 8;
+				$scope.pay.overtime += 4;
+				$scope.pay.overtime += (temp - 12) * (4/3);
+				$scope.pay.regular += 8;
 			}
 		}
 
 		// overtime should be 1.5x pay, so I added overtime x 0.5
-		$scope.pay.gross = ( (total * 1) + ($scope.overtime * 0.5) ) * $scope.payrate;
+		$scope.pay.gross = ( (total * 1) + ($scope.pay.overtime * 0.5) ) * $scope.payrate;
 		//I put 4% towards my 401k as is the default for Tesla
 		//as calculated online, paycheck is ~78% - 4% (401k) of gross pay
 		//total ~74% of paycheck
 		$scope.pay.paycheck = $scope.pay.gross * 0.74;
-		$scope.pay.tax = $scope.pay.gross * 0.26;
+		$scope.pay.tax = $scope.pay.gross * 0.22;
+		$scope.pay.k401 = $scope.pay.gross * ($scope.k401 / 100);
+		//hours worked for the government
+		$scope.pay.taxh = $scope.pay.tax / $scope.payrate;
 
 		return total;
 	};
@@ -181,9 +184,9 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 
 	// prepare data object for tesla stock quote
 	$scope.tsla = {
-		total: 0,
+		total:	0,
 		change: 0,
-		color: {"color":"green"}
+		color:	{"color":"green"}
 	}
 
 	// get data from web for tesla stock quote
@@ -200,5 +203,64 @@ app.controller('MainController', ['$scope', '$http', 'quote', function($scope, $
 	});
 
 
+// --------------------------------     Auto Score and Saving    --------------------------------- //
+
+	// save data to cookies every 60 seconds
+	setInterval(function(){
+		$scope.$apply(function() {
+			$scope.saveHours();
+		});
+	}, 60000);
+
+// ------------------------------------     End Code    ------------------------------------------- //
 
 }]);
+
+// ----------------------------------     Old Functions    ---------------------------------------- //
+
+	/*$scope.loadHours = function() {
+		$http.get("php/getdata.php")
+		.success(function (data) {
+			//console.log($scope.hours);
+			for (var i = data.length - 1; i >= 0; i--) {
+				data[i].win.slice(0,-5);
+				data[i].win  = new Date(data[i].win);
+				data[i].lout.slice(0,-5);
+				data[i].lout = new Date(data[i].lout);
+				data[i].lin.slice(0,-5);
+				data[i].lin  = new Date(data[i].lin);
+				data[i].wout.slice(0,-5);
+				data[i].wout = new Date(data[i].wout);
+				//console.log(data[i]);
+			};
+			$scope.hours = data;
+			//console.log($scope.hours);
+		}).error(function () {
+			alert("An unexpected error ocurred!");
+		});
+	};*/
+
+	/*//This function saves the hours to a text document on the server
+	$scope.httpPost = function() {
+		//console.log("prepost");
+		$http.post('php/setdata.php', JSON.stringify($scope.hours))
+		.error(function(status){console.log(status)});
+		//console.log("postpost");
+		alert("Hours Saved");
+	};*/
+
+	/*//This function resets the data then saves the cleared data to the server
+	$scope.clearHours = function() {
+		//reset all of the values
+		var clear = new Date("1970-01-01T08:00:00");
+		for (var i = $scope.hours.length - 1; i >= 0; i--) {
+			$scope.hours[i].wout = clear;
+			$scope.hours[i].win  = clear;
+			$scope.hours[i].lin  = clear;
+			$scope.hours[i].lout = clear;
+		}
+		//post to the server
+		$http.post('php/setdata.php', JSON.stringify($scope.hours))
+		.error(function(status){console.log(status)});
+		alert("Hours Cleared and Saved");
+	};*/
