@@ -1,21 +1,53 @@
-app.factory('quote', ['$http', function($http) {
-	var url = "http://query.yahooapis.com/v1/public/yql";
-	var symbol = "tsla";
-	var qstring = "select * from yahoo.finance.quotes where symbol in ('" + symbol + "')";
+//HourController.js
+// -----------------------------------     Services    ----------------------------------------- //
 
-	return $http.get(url + '?q=' + qstring + "&format=json&diagnostics=true&env=http://datatables.org/alltables.env") 
+app.factory('quote', function($http) {
+	// prepare data object for tesla stock quote
+	var q = {
+		total:	0,
+		change: 0,
+		color:	{"color":"green"}
+	}
+	// prepare the object for return
+	var service = {};
+
+	// add server query function to get stock information
+	service.getQ = function(s) {
+		var url = "http://query.yahooapis.com/v1/public/yql";
+		var symbol = s;
+		var qstring = "select * from yahoo.finance.quotes where symbol in ('" + symbol + "')";
+
+		$http.get(url + '?q=' + qstring + "&format=json&diagnostics=true&env=http://datatables.org/alltables.env") 
 		.success(function(data) {
-			return data;
+			//retrieve specific information I want to display
+			q.total = data.query.results.quote.LastTradePriceOnly;
+			q.change = data.query.results.quote.Change;
+			//change the color to simbolize possitive or negative change
+			if (q.change >= 0) {
+				q.color = {"color":"green"};
+			} else {
+				q.color = {"color":"red"};
+			};
+			//return needed variable
+			return q;
 		}) 
 		.error(function(err) {
 			return err;
 		});
-}]);
+
+		// idk why I need this, but this seems to be what returns, it is the needed object data
+		return q;
+	}
+
+	return service;
+});
 
 
+
+// ----------------------------------     Controller    ---------------------------------------- //
 
 // old functions require '$http' to be passed in as well, replaced by '$cookies'
-app.controller('MainController', ['$scope', '$cookies', 'quote', function($scope, $cookies, quote) {
+app.controller('MainController', function($scope, $cookies, quote) {
 
 // --------------------------------------     IO    -------------------------------------------- //
 
@@ -23,6 +55,7 @@ app.controller('MainController', ['$scope', '$cookies', 'quote', function($scope
 	var payrate = $cookies.getObject('payrate');
 	var k401 	= $cookies.getObject('k401');
 
+	// check if the cookie exists
 	if (hours) {
 		/* Required Format: 2014-03-08T00:00:00
 		 * Server Format:   1970-01-01T20:00:00.000Z
@@ -178,30 +211,11 @@ app.controller('MainController', ['$scope', '$cookies', 'quote', function($scope
 
 	// get today's date
 	$scope.date = new Date();
-	//console.log($scope.date);
 
 // ---------------------------------     Stock Quote     ------------------------------------------ //
-
-	// prepare data object for tesla stock quote
-	$scope.tsla = {
-		total:	0,
-		change: 0,
-		color:	{"color":"green"}
-	}
-
+	
 	// get data from web for tesla stock quote
-	quote.success(function(data) {
-		//console.log(data);
-		$scope.tsla.total = data.query.results.quote.LastTradePriceOnly;
-		$scope.tsla.change = data.query.results.quote.Change;
-		if ($scope.tsla.change >= 0) {
-				$scope.tsla.color = {"color":"green"};
-			} else {
-				$scope.tsla.color = {"color":"red"};
-			};
-			//console.log($scope.tsla);
-	});
-
+	$scope.tsla = quote.getQ('tsla');
 
 // --------------------------------     Auto Score and Saving    --------------------------------- //
 
@@ -212,11 +226,11 @@ app.controller('MainController', ['$scope', '$cookies', 'quote', function($scope
 		});
 	}, 60000);
 
-// ------------------------------------     End Code    ------------------------------------------- //
+// ---------------------------------     End Controller    ---------------------------------------- //
 
-}]);
+});
 
-// ----------------------------------     Old Functions    ---------------------------------------- //
+// --------------------------------     IO to a txt file    -------------------------------------- //
 
 	/*$scope.loadHours = function() {
 		$http.get("php/getdata.php")
@@ -238,18 +252,18 @@ app.controller('MainController', ['$scope', '$cookies', 'quote', function($scope
 		}).error(function () {
 			alert("An unexpected error ocurred!");
 		});
-	};*/
+	};
 
-	/*//This function saves the hours to a text document on the server
+	//This function saves the hours to a text document on the server
 	$scope.httpPost = function() {
 		//console.log("prepost");
 		$http.post('php/setdata.php', JSON.stringify($scope.hours))
 		.error(function(status){console.log(status)});
 		//console.log("postpost");
 		alert("Hours Saved");
-	};*/
+	};
 
-	/*//This function resets the data then saves the cleared data to the server
+	//This function resets the data then saves the cleared data to the server
 	$scope.clearHours = function() {
 		//reset all of the values
 		var clear = new Date("1970-01-01T08:00:00");
