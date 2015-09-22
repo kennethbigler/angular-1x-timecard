@@ -47,17 +47,17 @@
         
 <!---------------------------------------------------------------------------------------------------->
         <!-- Main Content -->
-        <div class="col-md-10 col-sm-9">
+        <div class="col-lg-10 col-md-9 col-sm-9">
             <div class="mainContent">
                 <h3 class="mainHeader">Summary</h3>
                 <div class="form-group">
-                            <label class="control-label col-sm-2" for="payrate">Pay Rate ($/Hour)</label>
-                            <div class="col-sm-10">
-                                <input type="number" id="payrate" class="form-control" placeholder="10" ng-model="payrate">
+                            <label class="control-label col-md-2 col-sm-3" for="payrate">Hourly Rate:</label>
+                            <div class="col-md-10 col-sm-9">
+                                <input type="number" id="payrate" class="form-control" placeholder="$10/hour" ng-model="payrate">
                             </div>
-                            <label class="control-label col-sm-2" for="k401">401K (%)</label>
-                            <div class="col-sm-10">
-                                <input type="number" id="k401" class="form-control" placeholder="4" ng-model="k401">
+                            <label class="control-label col-md-2 col-sm-3" for="k401">401K (%):</label>
+                            <div class="col-md-10 col-sm-9">
+                                <input type="number" id="k401" class="form-control" placeholder="4%" ng-model="k401">
                             </div>
                         </div>
                 <table class="table table-striped">
@@ -102,15 +102,16 @@
 <!---------------------------------------------------------------------------------------------------->
 
     	<!-- Side Column -->
-        <div class="col-md-2 col-sm-3">
+        <div class="col-lg-2 col-md-3 col-sm-3">
 
             <button ng-click="saveHours()" class="btn btn-danger btn-lg btn-block">Save Hours</button>
             <button ng-click="clearHours()" class="btn btn-danger btn-lg btn-block">Clear Hours</button>
             <!-- Code for Stock Quote -->
             <div class="phonehide sideContent">
-                <h3 class="sideHeader"><a href="http://quote.yahoo.com/q?s=TSLA&amp;d=1d">Tesla Stock Quote</a></h3>
+                <h3 class="sideHeader"><a href="http://quote.yahoo.com/q?s=TSLA&amp;d=1d" target="_blank">Tesla Stock Quote</a></h3>
                 <div class="minilink" align="center">
-                Tesla Stock Quote: <b>${{ tsla.total | number:2 }}</b>&nbsp;&nbsp;(<span ng-style='tsla.color'><b>{{ tsla.change | number:2 }}</b></span>)
+                TSLA:&nbsp; <b>${{ tsla.total | number:2 }}</b>&nbsp; 
+                (<span ng-style='tsla.color'><b>{{ tsla.change | number:2 }},&nbsp;{{ tsla.change / tsla.total * 100 | number:2 }}%</b></span>)
             </div>
                 <div class="minilink" align="center"></div>
             </div><!-- /Stock Quote -->
@@ -139,20 +140,20 @@
                 <tr ng-repeat="info in hours track by $index">
                     <td>{{ info.name }}</td>
                     <td>
-                        <input type="time" class="form-control" name="input" ng-model="info.win" placeholder="HH:mm:ss"/>
+                        <input type="time" class="form-control" name="input" ng-model="info.win" placeholder="HH:mm"/>
                     </td>
                     <td class="phonehide">
-                        <input type="time" class="form-control" name="input" ng-model="info.lout" placeholder="HH:mm:ss"/>
+                        <input type="time" class="form-control" name="input" ng-model="info.lout" placeholder="HH:mm"/>
                     </td>
                     <td class="phonehide">
-                        <input type="time" class="form-control" name="input" ng-model="info.lin" placeholder="HH:mm:ss"/>
+                        <input type="time" class="form-control" name="input" ng-model="info.lin" placeholder="HH:mm"/>
                     </td>
                     <td>
-                        <input type="time" class="form-control" name="input" ng-model="info.wout" placeholder="HH:mm:ss"/>
+                        <input type="time" class="form-control" name="input" ng-model="info.wout" placeholder="HH:mm"/>
                     </td>
                     <td class="phonehide">
-                        {{ ((info.wout - info.win) - (info.lin - info.lout)) / 3600000
-                            | number:2 | number }}</td>
+                        {{ ((info.wout - info.win) - (info.lin - info.lout)) / 3600000 | number:2 | number }}
+                    </td>
                 </tr>
             </tbody>
         </table>
