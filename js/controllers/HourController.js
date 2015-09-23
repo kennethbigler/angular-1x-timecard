@@ -1,43 +1,44 @@
 //HourController.js
 // -----------------------------------     Services    ----------------------------------------- //
 
-app.factory('quote', function($http) {
+app.factory('quote', function ($http) {
+    "use strict";
 	// prepare data object for tesla stock quote
 	var q = {
 		total:	0,
 		change: 0,
-		color:	{"color":"green"}
-	}
+		color:	{"color": "green"}
+	},
 	// prepare the object for return
-	var service = {};
+        service = {};
 
 	// add server query function to get stock information
-	service.getQ = function(s) {
-		var url = "http://query.yahooapis.com/v1/public/yql";
-		var symbol = s;
-		var qstring = "select * from yahoo.finance.quotes where symbol in ('" + symbol + "')";
+	service.getQ = function (s) {
+		var url = "http://query.yahooapis.com/v1/public/yql",
+            symbol = s,
+            qstring = "select * from yahoo.finance.quotes where symbol in ('" + symbol + "')";
 
-		$http.get(url + '?q=' + qstring + "&format=json&diagnostics=true&env=http://datatables.org/alltables.env") 
-		.success(function(data) {
-			//retrieve specific information I want to display
-			q.total = data.query.results.quote.LastTradePriceOnly;
-			q.change = data.query.results.quote.Change;
-			//change the color to simbolize possitive or negative change
-			if (q.change >= 0) {
-				q.color = {"color":"green"};
-			} else {
-				q.color = {"color":"red"};
-			};
-			//return needed variable
-			return q;
-		}) 
-		.error(function(err) {
-			return err;
-		});
+		$http.get(url + '?q=' + qstring + "&format=json&diagnostics=true&env=http://datatables.org/alltables.env")
+            .success(function (data) {
+                //retrieve specific information I want to display
+                q.total = data.query.results.quote.LastTradePriceOnly;
+                q.change = data.query.results.quote.Change;
+                //change the color to simbolize possitive or negative change
+                if (q.change >= 0) {
+                    q.color = {"color": "green"};
+                } else {
+                    q.color = {"color": "red"};
+                }
+                //return needed variable
+                return q;
+            })
+            .error(function (err) {
+                return err;
+            });
 
 		// idk why I need this, but this seems to be what returns, it is the needed object data
 		return q;
-	}
+	};
 
 	return service;
 });
@@ -47,13 +48,16 @@ app.factory('quote', function($http) {
 // ----------------------------------     Controller    ---------------------------------------- //
 
 // old functions require '$http' to be passed in as well, replaced by '$cookies'
-app.controller('MainController', function($scope, $cookies, quote) {
+app.controller('MainController', function ($scope, $cookies, quote) {
+    
+    "use strict";
 
 // --------------------------------------     IO    -------------------------------------------- //
 
-	var hours	= $cookies.getObject('hours');
-	var payrate = $cookies.getObject('payrate');
-	var k401 	= $cookies.getObject('k401');
+	var hours	= $cookies.getObject('hours'),
+        payrate = $cookies.getObject('payrate'),
+        k401    = $cookies.getObject('k401'),
+        i = 0;
 
 	// check if the cookie exists
 	if (hours) {
@@ -63,24 +67,24 @@ app.controller('MainController', function($scope, $cookies, quote) {
 		 *  - trimming last 5 characters from data ('.000Z')
 		 *  - putting data in the proper Date format (rather than string)
 		 */
-		for (var i = hours.length - 1; i >= 0; i--) {
-			hours[i].win.slice(0,-5);
+		for (i = hours.length - 1; i >= 0; i -= 1) {
+			hours[i].win.slice(0, -5);
 			hours[i].win  = new Date(hours[i].win);
-			hours[i].lout.slice(0,-5);
+			hours[i].lout.slice(0, -5);
 			hours[i].lout = new Date(hours[i].lout);
-			hours[i].lin.slice(0,-5);
+			hours[i].lin.slice(0, -5);
 			hours[i].lin  = new Date(hours[i].lin);
-			hours[i].wout.slice(0,-5);
+			hours[i].wout.slice(0, -5);
 			hours[i].wout = new Date(hours[i].wout);
 			//console.log(hours[i]);
-		};
+		}
 		//console.log(hours);
 	} else {
 		// if there was no hours data fill with default values
 		//console.log(window.hours);
 		hours = window.hours;
 		//console.log(hours);
-	};
+	}
 
 	if (!payrate) {
 		payrate = 10;
@@ -96,17 +100,17 @@ app.controller('MainController', function($scope, $cookies, quote) {
 
 // ---------------------------------     IO Functions    --------------------------------------- //
 
-	$scope.clearHours = function() {
+	$scope.clearHours = function () {
 		$cookies.remove('hours');
 		window.location.reload();
 	};
 
-	$scope.saveHours = function() {
+	$scope.saveHours = function () {
 		$cookies.putObject('hours', $scope.hours);
 		$cookies.putObject('payrate', $scope.payrate);
 		$cookies.putObject('k401', $scope.k401);
 		console.log("hours saved");
-	}
+	};
 
 	
 // --------------------------------     Calculations     ---------------------------------------- //
@@ -120,7 +124,7 @@ app.controller('MainController', function($scope, $cookies, quote) {
 		paycheck:	0,
 		tax:		0,
 		k401:		0
-	}
+	};
 
 	/*This function calculates:
 	 *    the total hours worked and stores it in a global variable
@@ -128,44 +132,43 @@ app.controller('MainController', function($scope, $cookies, quote) {
 	 *    grosspay based on payrate
 	 *    aproximate tax for CA employee in lower brackets
 	 */
-	$scope.calculate = function() {
+	$scope.calculate = function () {
 
-		var temp	 = 0;
-		var days	 = 0;
-		var workdays = 0;
-		var total	 = 0;
+		var temp	 = 0,
+            days	 = 0,
+            workdays = 0,
+            total	 = 0,
+            i        = 0;
 
 		$scope.pay.overtime	= 0;
 		$scope.pay.regular	= 0;
 
-		for (var i = 0; i < $scope.hours.length; i++) {
+		for (i = 0; i < $scope.hours.length; i += 1) {
 			temp = ($scope.hours[i].wout - $scope.hours[i].win) - ($scope.hours[i].lin - $scope.hours[i].lout);
-			// compensate for minutes      (/ 60)
-			// compensate for seconds 	   (/ 60)
-			// compensate for milliseconds (/ 1,000)
-			// total                       (/ 3,600,000)
+			// compensate for minutes        (/ 60)
+			// compensate for seconds        (/ 60)
+			// compensate for milliseconds   (/ 1,000)
+			// total                         (/ 3,600,000)
 			temp = temp / 3600000;
 
 			//calculate total
 			total += temp;
 
 			/* overtime logic:
-			 * 	If you worked 7 days in a week, the 7th day is overtime
-			 *	If you worked anything over 8 hours on the 7th day it is double time
+			 *  If you worked 7 days in a week, the 7th day is overtime
+			 *  If you worked anything over 8 hours on the 7th day it is double time
 			 */
 			days += 1;
 
 			if (temp > 0) {
 				workdays += 1;
-			} else {
-				continue;
-			}
+			} else { continue; }
 
-			if (days == 7) {
-				if (workdays == 7) {
+			if (days === 7) {
+				if (workdays === 7) {
 					workdays = 0;
 					if (temp > 8) {
-						$scope.pay.overtime += (temp - 8) * (4/3);
+						$scope.pay.overtime += (temp - 8) * (4 / 3);
 						$scope.pay.overtime += 8;
 					} else {
 						$scope.pay.overtime += temp;
@@ -181,20 +184,20 @@ app.controller('MainController', function($scope, $cookies, quote) {
 			 *	If you worked more than 12 hours in a day it is double time
 			 *	All else is regular time
 			 */
-			if (temp <= 8 && temp != 0) {
+			if (temp <= 8 && temp !== 0) {
 				$scope.pay.regular += temp;
 			} else if (temp > 8 && temp <= 12) {
 				$scope.pay.overtime += (temp - 8);
 				$scope.pay.regular += 8;
 			} else if (temp > 12) {
 				$scope.pay.overtime += 4;
-				$scope.pay.overtime += (temp - 12) * (4/3);
+				$scope.pay.overtime += (temp - 12) * (4 / 3);
 				$scope.pay.regular += 8;
 			}
 		}
 
 		// overtime should be 1.5x pay, so I added overtime x 0.5
-		$scope.pay.gross = ( (total * 1) + ($scope.pay.overtime * 0.5) ) * $scope.payrate;
+		$scope.pay.gross = (total + ($scope.pay.overtime * 0.5)) * $scope.payrate;
 		//I put 4% towards my 401k as is the default for Tesla
 		//as calculated online, paycheck is ~78% - 4% (401k) of gross pay
 		//total ~74% of paycheck
@@ -220,8 +223,8 @@ app.controller('MainController', function($scope, $cookies, quote) {
 // --------------------------------     Auto Score and Saving    --------------------------------- //
 
 	// save data to cookies every 60 seconds
-	setInterval(function(){
-		$scope.$apply(function() {
+	setInterval(function () {
+		$scope.$apply(function () {
 			$scope.saveHours();
 		});
 	}, 60000);
