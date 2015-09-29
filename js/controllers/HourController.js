@@ -1,6 +1,7 @@
 //HourController.js
+/*jslint continue:true*/
+/*global app, console*/
 // -----------------------------------     Services    ----------------------------------------- //
-
 app.factory('quote', function ($http) {
     "use strict";
 	// prepare data object for tesla stock quote
@@ -31,29 +32,17 @@ app.factory('quote', function ($http) {
                 }
                 //return needed variable
                 return q;
-            })
-            .error(function (err) {
-                return err;
-            });
-
+            }).error(function (err) { return err; });
 		// idk why I need this, but this seems to be what returns, it is the needed object data
 		return q;
 	};
-
 	return service;
 });
-
-
-
 // ----------------------------------     Controller    ---------------------------------------- //
-
 // old functions require '$http' to be passed in as well, replaced by '$cookies'
 app.controller('MainController', function ($scope, $cookies, quote) {
-    
     "use strict";
-
 // --------------------------------------     IO    -------------------------------------------- //
-
 	var hours	= $cookies.getObject('hours'),
         payrate = $cookies.getObject('payrate'),
         k401    = $cookies.getObject('k401'),
@@ -85,36 +74,25 @@ app.controller('MainController', function ($scope, $cookies, quote) {
 		hours = window.hours;
 		//console.log(hours);
 	}
-
-	if (!payrate) {
-		payrate = 10;
-	}
-	if (!k401) {
-		k401 = 4;
-	}
+	if (!payrate) { payrate = 10; }
+	if (!k401) { k401 = 4; }
 
 	// set model to variables usable by the view
 	$scope.hours	= hours;
 	$scope.payrate	= payrate;
 	$scope.k401		= k401;
-
 // ---------------------------------     IO Functions    --------------------------------------- //
-
 	$scope.clearHours = function () {
 		$cookies.remove('hours');
 		window.location.reload();
 	};
-
 	$scope.saveHours = function () {
 		$cookies.putObject('hours', $scope.hours);
 		$cookies.putObject('payrate', $scope.payrate);
 		$cookies.putObject('k401', $scope.k401);
 		console.log("hours saved");
 	};
-
-	
 // --------------------------------     Calculations     ---------------------------------------- //
-
 	//Global variables manipulated in the calculate function, used in view
 	$scope.pay = {
 		overtime:	0,
@@ -139,7 +117,6 @@ app.controller('MainController', function ($scope, $cookies, quote) {
             workdays = 0,
             total	 = 0,
             i        = 0;
-
 		$scope.pay.overtime	= 0;
 		$scope.pay.regular	= 0;
 
@@ -150,20 +127,16 @@ app.controller('MainController', function ($scope, $cookies, quote) {
 			// compensate for milliseconds   (/ 1,000)
 			// total                         (/ 3,600,000)
 			temp = temp / 3600000;
-
 			//calculate total
 			total += temp;
-
 			/* overtime logic:
 			 *  If you worked 7 days in a week, the 7th day is overtime
 			 *  If you worked anything over 8 hours on the 7th day it is double time
 			 */
 			days += 1;
-
 			if (temp > 0) {
 				workdays += 1;
 			} else { continue; }
-
 			if (days === 7) {
 				if (workdays === 7) {
 					workdays = 0;
@@ -178,7 +151,6 @@ app.controller('MainController', function ($scope, $cookies, quote) {
 				days = 0;
 				continue;
 			}
-
 			/* overtime logic:
 			 *	If you worked more than 8 hours in a day it is overtime
 			 *	If you worked more than 12 hours in a day it is double time
@@ -195,7 +167,6 @@ app.controller('MainController', function ($scope, $cookies, quote) {
 				$scope.pay.regular += 8;
 			}
 		}
-
 		// overtime should be 1.5x pay, so I added overtime x 0.5
 		$scope.pay.gross = (total + ($scope.pay.overtime * 0.5)) * $scope.payrate;
 		//I put 4% towards my 401k as is the default for Tesla
@@ -206,78 +177,69 @@ app.controller('MainController', function ($scope, $cookies, quote) {
 		$scope.pay.k401 = $scope.pay.gross * ($scope.k401 / 100);
 		//hours worked for the government
 		$scope.pay.taxh = $scope.pay.tax / $scope.payrate;
-
 		return total;
 	};
-
 // ------------------------------------     Date     ---------------------------------------------- //
-
 	// get today's date
 	$scope.date = new Date();
-
 // ---------------------------------     Stock Quote     ------------------------------------------ //
-	
 	// get data from web for tesla stock quote
 	$scope.tsla = quote.getQ('tsla');
-
 // --------------------------------     Auto Score and Saving    --------------------------------- //
-
 	// save data to cookies every 60 seconds
 	setInterval(function () {
 		$scope.$apply(function () {
 			$scope.saveHours();
+            $scope.tsla = quote.getQ('tsla');
 		});
 	}, 60000);
 
 // ---------------------------------     End Controller    ---------------------------------------- //
-
 });
-
 // --------------------------------     IO to a txt file    -------------------------------------- //
-
-	/*$scope.loadHours = function() {
-		$http.get("php/getdata.php")
-		.success(function (data) {
-			//console.log($scope.hours);
-			for (var i = data.length - 1; i >= 0; i--) {
-				data[i].win.slice(0,-5);
-				data[i].win  = new Date(data[i].win);
-				data[i].lout.slice(0,-5);
-				data[i].lout = new Date(data[i].lout);
-				data[i].lin.slice(0,-5);
-				data[i].lin  = new Date(data[i].lin);
-				data[i].wout.slice(0,-5);
-				data[i].wout = new Date(data[i].wout);
-				//console.log(data[i]);
-			};
-			$scope.hours = data;
-			//console.log($scope.hours);
-		}).error(function () {
-			alert("An unexpected error ocurred!");
-		});
-	};
-
-	//This function saves the hours to a text document on the server
-	$scope.httpPost = function() {
-		//console.log("prepost");
-		$http.post('php/setdata.php', JSON.stringify($scope.hours))
-		.error(function(status){console.log(status)});
-		//console.log("postpost");
-		alert("Hours Saved");
-	};
-
-	//This function resets the data then saves the cleared data to the server
-	$scope.clearHours = function() {
-		//reset all of the values
-		var clear = new Date("1970-01-01T08:00:00");
-		for (var i = $scope.hours.length - 1; i >= 0; i--) {
-			$scope.hours[i].wout = clear;
-			$scope.hours[i].win  = clear;
-			$scope.hours[i].lin  = clear;
-			$scope.hours[i].lout = clear;
-		}
-		//post to the server
-		$http.post('php/setdata.php', JSON.stringify($scope.hours))
-		.error(function(status){console.log(status)});
-		alert("Hours Cleared and Saved");
-	};*/
+/*$scope.loadHours = function () {
+    $http.get("php/getdata.php")
+        .success(function (data) {
+            var i = 0;
+            //console.log($scope.hours);
+            for (i = data.length - 1; i >= 0; i -= 1) {
+                data[i].win.slice(0, -5);
+                data[i].win  = new Date(data[i].win);
+                data[i].lout.slice(0, -5);
+                data[i].lout = new Date(data[i].lout);
+                data[i].lin.slice(0, -5);
+                data[i].lin  = new Date(data[i].lin);
+                data[i].wout.slice(0, -5);
+                data[i].wout = new Date(data[i].wout);
+                //console.log(data[i]);
+            }
+            $scope.hours = data;
+            //console.log($scope.hours);
+        }).error(function () {
+            alert("An unexpected error ocurred!");
+        });
+};
+//This function saves the hours to a text document on the server
+$scope.httpPost = function () {
+    //console.log("prepost");
+    $http.post('php/setdata.php', JSON.stringify($scope.hours))
+        .error(function (status) { console.log(status); });
+    //console.log("postpost");
+    alert("Hours Saved");
+};
+//This function resets the data then saves the cleared data to the server
+$scope.clearHours = function () {
+    //reset all of the values
+    var clear = new Date("1970-01-01T08:00:00"),
+        i = 0;
+    for (i = $scope.hours.length - 1; i >= 0; i -= 1) {
+        $scope.hours[i].wout = clear;
+        $scope.hours[i].win  = clear;
+        $scope.hours[i].lin  = clear;
+        $scope.hours[i].lout = clear;
+    }
+    //post to the server
+    $http.post('php/setdata.php', JSON.stringify($scope.hours))
+        .error(function (status) { console.log(status); });
+    alert("Hours Cleared and Saved");
+};*/
