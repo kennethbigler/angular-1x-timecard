@@ -10,7 +10,7 @@ app.controller('MainController', function ($scope, $localstorage, quote) {
         hours = $localstorage.getObject('hours'),
         i = 0;
 
-	// check if the cookie exists
+	// check if the local data exists
 	if (Object.keys(hours).length !== 0) {
 		/* Required Format: 2014-03-08T00:00:00
 		 * Server Format:   1970-01-01T20:00:00.000Z
@@ -157,7 +157,7 @@ app.controller('MainController', function ($scope, $localstorage, quote) {
 	// get data from web for tesla stock quote
 	$scope.tsla = quote.getQ('tsla');
 // --------------------------------     Auto Score and Saving    --------------------------------- //
-	// save data to cookies every 60 seconds
+	// save data to local storage every 60 seconds
 	setInterval(function () {
 		$scope.$apply(function () {
 			$scope.saveHours();

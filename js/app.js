@@ -1,5 +1,5 @@
 /*global angular*/
-var app = angular.module('myApp', ['ngCookies'])
+var app = angular.module('myApp', [])
 // -----------------------------------     Filters    ------------------------------------------ //
         .filter('floor', function () {
             "use strict";

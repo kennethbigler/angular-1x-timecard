@@ -1,6 +1,5 @@
 @charset "utf-8";
 /* CSS Document */
-
 /* code for fonts */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans';
@@ -9,7 +8,6 @@ p, div {
     font-family: 'Open Sans';
 }
 /* end code for fonts */
-
 /* Colors:
  * L-grey:	#E7E8D1; NOT USED
  * Brown:	#D3CEAA;
@@ -17,19 +15,15 @@ p, div {
  * D-grey:  #424242;
  * Red: 	#8E001C;
  * end code for colors */
-
 /********************\
         Global
 \********************/
-
 body {
 	background-color: #FBF7E4;
 }
-
 body > .container {
 	padding-top: 30px;
 }
-
 /********************\
         Header
 \********************/
@@ -45,13 +39,11 @@ header {
        -moz-box-shadow: .0625em .3125em .625em #888;
     		box-shadow: .0625em .3125em .625em #888;
 }
-
 header h2 {
 	line-height: 50px;
 	margin: 0;
 	color: white;
 }
-
 /********************\
         Footer
 \********************/
@@ -63,21 +55,17 @@ footer {
 	background-color: #424242;
 	padding: 0;
 }
-
 footer p {
 	line-height: 50px;
 	margin: 0;
 	color: white;
 }
-
 footer a {
 	color: white;
 }
-
 /********************\
       Left Side
 \********************/
-
 div.sideContent {
 	border:			3px solid #8E001C;
 	padding:		10px;
@@ -98,17 +86,14 @@ div.sideContent {
 	padding-bottom:	5px;
 	color: white;
 }
-
 .sideHeader a {
 	color: white;
 	text-decoration: none;
 }
-
 .sideContent ul {
 	padding-left: 15px;
 	margin-bottom: 0px;
 }
-
 .btn-danger {
 	background-color: #8E001C;
     border-color: #8E001C;
@@ -118,20 +103,19 @@ div.sideContent {
        -moz-box-shadow: .0625em .3125em .625em #888;
     		box-shadow: .0625em .3125em .625em #888;
 }
-
 .btn-danger:hover {
   background-color: #D3CEAA;
 }
-
+.btn-danger:focus {
+  background-color: #8E001C;
+}
 /********************\
      Main Content
 \********************/
-
 .mainHeader a {
 	color: white;
 	text-decoration: none;
 }
-
 div.mainContent {
 	border: 3px solid #424242;
 	padding: 10px;
@@ -142,7 +126,6 @@ div.mainContent {
        -moz-box-shadow: .0625em .3125em .625em #888;
     		box-shadow: .0625em .3125em .625em #888;
 }
-
 .mainHeader {
 	background-color: #424242;
 	margin:			0;
