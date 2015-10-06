@@ -10,12 +10,20 @@ p, div {
 }
 /* end code for fonts */
 
+/* Colors:
+ * L-grey:	#E7E8D1; NOT USED
+ * Brown:	#D3CEAA;
+ * Tan: 	#FBF7E4;
+ * D-grey:  #424242;
+ * Red: 	#8E001C;
+ * end code for colors */
+
 /********************\
         Global
 \********************/
 
 body {
-	background-color: #FAFAFA;
+	background-color: #FBF7E4;
 }
 
 body > .container {
@@ -32,7 +40,7 @@ header {
 	height: 50px;
 	padding: 0;
 	margin-bottom: 15px;
-	background-color: #CC0000;
+	background-color: #8E001C;
 	-webkit-box-shadow: .0625em .3125em .625em #888;
        -moz-box-shadow: .0625em .3125em .625em #888;
     		box-shadow: .0625em .3125em .625em #888;
@@ -52,7 +60,7 @@ footer {
 	left:	0;
 	right:	0;
 	height:	50px;
-	background-color: #333;
+	background-color: #424242;
 	padding: 0;
 }
 
@@ -71,7 +79,7 @@ footer a {
 \********************/
 
 div.sideContent {
-	border:			3px solid #CC0000;
+	border:			3px solid #8E001C;
 	padding:		10px;
 	padding-top:	0;
 	margin-bottom:	10px;
@@ -81,7 +89,7 @@ div.sideContent {
     		box-shadow: .0625em .3125em .625em #888;
 }
 .sideHeader {
-	background-color: #CC0000;
+	background-color: #8E001C;
 	margin:			0;
 	margin-bottom:	5px;
 	margin-left:	-10px;
@@ -102,12 +110,17 @@ div.sideContent {
 }
 
 .btn-danger {
-	background-color: #CC0000;
+	background-color: #8E001C;
+    border-color: #8E001C;
 	margin-bottom: 10px;
 	border-radius: 0px;
 	-webkit-box-shadow: .0625em .3125em .625em #888;
        -moz-box-shadow: .0625em .3125em .625em #888;
     		box-shadow: .0625em .3125em .625em #888;
+}
+
+.btn-danger:hover {
+  background-color: #D3CEAA;
 }
 
 /********************\
@@ -120,7 +133,7 @@ div.sideContent {
 }
 
 div.mainContent {
-	border: 3px solid #666;
+	border: 3px solid #424242;
 	padding: 10px;
 	margin-bottom: 10px;
 	padding-top: 0;
@@ -131,7 +144,7 @@ div.mainContent {
 }
 
 .mainHeader {
-	background-color: #666;
+	background-color: #424242;
 	margin:			0;
 	margin-bottom:	5px;
 	margin-left:	-10px;

@@ -1,15 +1,1 @@
-window.hours=[
-{"name":"Mon","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Tue","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Wed","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Thu","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Fri","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Sat","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Sun","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Mon","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Tue","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Wed","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Thu","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Fri","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Sat","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")},
-{"name":"Sun","win":new Date("1970-01-01T20:00:00"),"lout":new Date("1970-01-01T20:00:00"),"lin":new Date("1970-01-01T20:00:00"),"wout":new Date("1970-01-01T20:00:00")}]
+window.hours=[{"name":"Mon","win":null,"lout":null,"lin":null,"wout":null},{"name":"Tue","win":null,"lout":null,"lin":null,"wout":null},{"name":"Wed","win":null,"lout":null,"lin":null,"wout":null},{"name":"Thu","win":null,"lout":null,"lin":null,"wout":null},{"name":"Fri","win":null,"lout":null,"lin":null,"wout":null},{"name":"Sat","win":null,"lout":null,"lin":null,"wout":null},{"name":"Sun","win":null,"lout":null,"lin":null,"wout":null},{"name":"Mon","win":null,"lout":null,"lin":null,"wout":null},{"name":"Tue","win":null,"lout":null,"lin":null,"wout":null},{"name":"Wed","win":null,"lout":null,"lin":null,"wout":null},{"name":"Thu","win":null,"lout":null,"lin":null,"wout":null},{"name":"Fri","win":null,"lout":null,"lin":null,"wout":null},{"name":"Sat","win":null,"lout":null,"lin":null,"wout":null},{"name":"Sun","win":null,"lout":null,"lin":null,"wout":null}]

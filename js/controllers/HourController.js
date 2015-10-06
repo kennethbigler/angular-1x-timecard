@@ -1,55 +1,17 @@
 //HourController.js
 /*jslint continue:true*/
 /*global app, console*/
-// -----------------------------------     Services    ----------------------------------------- //
-app.factory('quote', function ($http) {
-    "use strict";
-	// prepare data object for tesla stock quote
-	var q = {
-		total:	0,
-		change: 0,
-		color:	{"color": "green"}
-	},
-	// prepare the object for return
-        service = {};
-
-	// add server query function to get stock information
-	service.getQ = function (s) {
-		var url = "http://query.yahooapis.com/v1/public/yql",
-            symbol = s,
-            qstring = "select * from yahoo.finance.quotes where symbol in ('" + symbol + "')";
-
-		$http.get(url + '?q=' + qstring + "&format=json&diagnostics=true&env=http://datatables.org/alltables.env")
-            .success(function (data) {
-                //retrieve specific information I want to display
-                q.total = data.query.results.quote.LastTradePriceOnly;
-                q.change = data.query.results.quote.Change;
-                //change the color to simbolize possitive or negative change
-                if (q.change >= 0) {
-                    q.color = {"color": "green"};
-                } else {
-                    q.color = {"color": "red"};
-                }
-                //return needed variable
-                return q;
-            }).error(function (err) { return err; });
-		// idk why I need this, but this seems to be what returns, it is the needed object data
-		return q;
-	};
-	return service;
-});
 // ----------------------------------     Controller    ---------------------------------------- //
-// old functions require '$http' to be passed in as well, replaced by '$cookies'
-app.controller('MainController', function ($scope, $cookies, quote) {
+// old functions require '$http' to be passed in as well, replaced by '$localstorage'
+app.controller('MainController', function ($scope, $localstorage, quote) {
     "use strict";
 // --------------------------------------     IO    -------------------------------------------- //
-	var hours	= $cookies.getObject('hours'),
-        payrate = $cookies.getObject('payrate'),
-        k401    = $cookies.getObject('k401'),
+	var memory = $localstorage.getObject('memory'),
+        hours = $localstorage.getObject('hours'),
         i = 0;
 
 	// check if the cookie exists
-	if (hours) {
+	if (Object.keys(hours).length !== 0) {
 		/* Required Format: 2014-03-08T00:00:00
 		 * Server Format:   1970-01-01T20:00:00.000Z
 		 * This function prepares the data by:
@@ -57,39 +19,48 @@ app.controller('MainController', function ($scope, $cookies, quote) {
 		 *  - putting data in the proper Date format (rather than string)
 		 */
 		for (i = hours.length - 1; i >= 0; i -= 1) {
-			hours[i].win.slice(0, -5);
-			hours[i].win  = new Date(hours[i].win);
-			hours[i].lout.slice(0, -5);
-			hours[i].lout = new Date(hours[i].lout);
-			hours[i].lin.slice(0, -5);
-			hours[i].lin  = new Date(hours[i].lin);
-			hours[i].wout.slice(0, -5);
-			hours[i].wout = new Date(hours[i].wout);
-			//console.log(hours[i]);
+            if (hours[i].win !== null) {
+                hours[i].win.slice(0, -5);
+                hours[i].win = new Date(hours[i].win);
+            }
+            if (hours[i].lout !== null) {
+                hours[i].lout.slice(0, -5);
+                hours[i].lout = new Date(hours[i].lout);
+            }
+            if (hours[i].lin !== null) {
+                hours[i].lin.slice(0, -5);
+                hours[i].lin = new Date(hours[i].lin);
+            }
+            if (hours[i].wout !== null) {
+                hours[i].wout.slice(0, -5);
+                hours[i].wout = new Date(hours[i].wout);
+            }
 		}
 		//console.log(hours);
 	} else {
 		// if there was no hours data fill with default values
-		//console.log(window.hours);
 		hours = window.hours;
-		//console.log(hours);
+        //console.log(hours);
 	}
-	if (!payrate) { payrate = 10; }
-	if (!k401) { k401 = 4; }
+	if (Object.keys(memory).length === 0) {
+        memory.payrate = 10;
+        memory.k401 = 4;
+    }
 
 	// set model to variables usable by the view
-	$scope.hours	= hours;
-	$scope.payrate	= payrate;
-	$scope.k401		= k401;
+	$scope.hours = hours;
+	$scope.payrate = memory.payrate;
+	$scope.k401 = memory.k401;
 // ---------------------------------     IO Functions    --------------------------------------- //
 	$scope.clearHours = function () {
-		$cookies.remove('hours');
+		$localstorage.remove('hours');
 		window.location.reload();
 	};
 	$scope.saveHours = function () {
-		$cookies.putObject('hours', $scope.hours);
-		$cookies.putObject('payrate', $scope.payrate);
-		$cookies.putObject('k401', $scope.k401);
+        memory.payrate = $scope.payrate;
+        memory.k401 = $scope.k401;
+		$localstorage.putObject('memory', memory);
+        $localstorage.putObject('hours', $scope.hours);
 		console.log("hours saved");
 	};
 // --------------------------------     Calculations     ---------------------------------------- //
