@@ -93,7 +93,7 @@ app.controller('HourController', ["$scope", "HourService", function ($scope, $HS
 			 *	If you worked more than 12 hours in a day it is double time
 			 *	All else is regular time
 			 */
-			if (temp <= 8) {
+			if (temp <= 8 && temp > 0) {
 				$scope.pay.regular += temp;
 			} else if (temp > 8 && temp <= 12) {
 				$scope.pay.regular += 8;
