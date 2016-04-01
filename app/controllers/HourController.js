@@ -1,23 +1,23 @@
 /*jslint continue:true */
 /*global app, console */
 // ----------------------------------     Controller    ---------------------------------------- //
-app.controller('HourController', ["$scope", "HourService", function ($scope, HourService) {
+app.controller('HourController', ["$scope", "HourService", function ($scope, $HS) {
     "use strict";
 // ---------------------------------     IO Functions    --------------------------------------- //
     // get today's date
 	$scope.date = new Date();
 	
 	// set model to variables usable by the view
-	$scope.hours = HourService.hours();
-	$scope.payrate = HourService.payrate();
-	$scope.k401 = HourService.k401();
-    $scope.tsla = HourService.getQ();
+	$scope.hours = $HS.hours();
+	$scope.payrate = $HS.payrate();
+	$scope.k401 = $HS.k401();
+    $scope.tsla = $HS.getQ();
     // set remove and update functions
 	$scope.clearHours = function () {
-		HourService.clearHours();
+		$HS.clearHours();
 	};
 	$scope.saveHours = function () {
-        HourService.saveHours($scope.payrate, $scope.k401, $scope.hours);
+        $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
 	};
     
 // ---------------------------------     Auto Update Quote    ----------------------------------- //
@@ -25,7 +25,7 @@ app.controller('HourController', ["$scope", "HourService", function ($scope, Hou
 	setInterval(function () {
 		$scope.$apply(function () {
 			$scope.saveHours();
-            $scope.tsla = HourService.getQ();
+            $scope.tsla = $HS.getQ();
 		});
 	}, 60000);
     
@@ -93,25 +93,24 @@ app.controller('HourController', ["$scope", "HourService", function ($scope, Hou
 			 *	If you worked more than 12 hours in a day it is double time
 			 *	All else is regular time
 			 */
-			if (temp <= 8 && temp !== 0) {
+			if (temp <= 8) {
 				$scope.pay.regular += temp;
 			} else if (temp > 8 && temp <= 12) {
-				$scope.pay.overtime += (temp - 8);
 				$scope.pay.regular += 8;
+                $scope.pay.overtime += (temp - 8);
 			} else if (temp > 12) {
-				$scope.pay.overtime += 4;
-				$scope.pay.overtime += (temp - 12) * (4 / 3);
 				$scope.pay.regular += 8;
+                $scope.pay.overtime += 4;
+				$scope.pay.overtime += (temp - 12) * (4 / 3);
 			}
 		}
 		// overtime should be 1.5x pay, so I added overtime x 0.5
 		$scope.pay.gross = (total + ($scope.pay.overtime * 0.5)) * $scope.payrate;
-		//I put 4% towards my 401k as is the default for Tesla
-		//as calculated online, paycheck is ~78% - 4% (401k) of gross pay
-		//total ~74% of paycheck
-		$scope.pay.paycheck = $scope.pay.gross * 0.74;
-		$scope.pay.tax = $scope.pay.gross * 0.22;
+		//as calculated online, paycheck is ~78% of gross pay
 		$scope.pay.k401 = $scope.pay.gross * ($scope.k401 / 100);
+        $scope.pay.paycheck = ($scope.pay.gross - $scope.pay.k401) * 0.78;
+		$scope.pay.tax = ($scope.pay.gross - $scope.pay.k401) * 0.22;
+		
 		//hours worked for the government
 		$scope.pay.taxh = $scope.pay.tax / $scope.payrate;
 		return total;
