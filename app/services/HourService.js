@@ -1,3 +1,4 @@
+/*jslint continue:true */
 /*global console, app */
 
 // ----------------------------------     Service    ---------------------------------------- //
@@ -78,6 +79,93 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
         $localstorage.put('k401', k);
         $localstorage.putObject('hours', h);
 		console.log("hours saved");
+	};
+    
+// --------------------------------     Calculations     ---------------------------------------- //
+	
+
+	/* This function calculates:
+	 *    the total hours worked and stores it in a global variable
+	 *    overtime based on CA State Law and returns that value
+	 *    grosspay based on payrate
+	 *    aproximate tax for CA employee in lower brackets
+	 */
+	factory.calculate = function (hours, k401, payrate) {
+        var
+            pay = {
+                overtime:	0,
+                regular:	0,
+                taxh:		0,
+                gross:		0,
+                paycheck:	0,
+                tax:		0,
+                k401:		0,
+                total:      0
+            },
+		    timeEntry = 0,
+            days = 0,
+            workdays = 0,
+            i = 0;
+
+		for (i = 0; i < hours.length; i += 1) {
+			timeEntry = (hours[i].wout - hours[i].win) - (hours[i].lin - hours[i].lout);
+			// compensate for minutes        (/ 60)
+			// compensate for seconds        (/ 60)
+			// compensate for milliseconds   (/ 1,000)
+			// total                         (/ 3,600,000)
+			timeEntry = timeEntry / 3600000;
+			// add to days and calculate total
+            days += 1;
+			if (timeEntry > 0) {
+                pay.total += timeEntry;
+				workdays += 1;
+			} else { continue; }
+
+            /* overtime logic:
+			 *  If you worked 7 days in a week, the 7th day is overtime
+			 *  If you worked anything over 8 hours on the 7th day it is double time
+			 */
+			if (days === 7) {
+				if (workdays === 7) {
+					if (timeEntry > 8) {
+						pay.overtime += (timeEntry - 8) * (4 / 3);
+						pay.overtime += 8;
+					} else {
+						pay.overtime += timeEntry;
+					}
+				}
+				workdays = 0;
+				days = 0;
+				continue;
+			}
+			/* overtime logic:
+			 *	If you worked more than 8 hours in a day it is overtime
+			 *	If you worked more than 12 hours in a day it is double time
+             *  If you worked more than 40 hours in a week it is overtime --- TO BE ADDED!!!
+			 *	All else is regular time
+			 */
+			if (timeEntry <= 8) {
+				pay.regular += timeEntry;
+			} else if (timeEntry > 8 && timeEntry <= 12) {
+				pay.regular += 8;
+                pay.overtime += (timeEntry - 8);
+			} else if (timeEntry > 12) {
+				pay.regular += 8;
+                pay.overtime += 4;
+				pay.overtime += (timeEntry - 12) * (4 / 3);
+			}
+		}
+		// overtime should be 1.5x pay, so I added overtime x 0.5
+		pay.gross = (pay.total + (pay.overtime * 0.5)) * payrate;
+		//as calculated online, paycheck is ~78% of gross pay
+		pay.k401 = pay.gross * (k401 / 100);
+        pay.paycheck = (pay.gross - pay.k401) * 0.78;
+		pay.tax = (pay.gross - pay.k401) * 0.22;
+		
+		//hours worked for the government
+		pay.taxh = pay.tax / payrate;
+        
+        return pay;
 	};
     
     return factory;
