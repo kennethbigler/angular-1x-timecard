@@ -31,6 +31,4 @@ app.controller('HourController', ["$scope", "HourService", function ($scope, $HS
             $scope.tsla = $HS.getQ();
 		});
 	}, 60000);
-	
-	
 }]);

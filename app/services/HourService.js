@@ -172,49 +172,44 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
 }]);
 
 // --------------------------------     IO to a txt file    -------------------------------------- //
-/*$scope.loadHours = function () {
-    $http.get("php/getdata.php")
-        .success(function (data) {
-            var i = 0;
-            //console.log($scope.hours);
-            for (i = data.length - 1; i >= 0; i -= 1) {
-                data[i].win.slice(0, -5);
-                data[i].win  = new Date(data[i].win);
-                data[i].lout.slice(0, -5);
-                data[i].lout = new Date(data[i].lout);
-                data[i].lin.slice(0, -5);
-                data[i].lin  = new Date(data[i].lin);
-                data[i].wout.slice(0, -5);
-                data[i].wout = new Date(data[i].wout);
-                //console.log(data[i]);
-            }
-            $scope.hours = data;
-            //console.log($scope.hours);
-        }).error(function () {
-            alert("An unexpected error ocurred!");
-        });
-};
-//This function saves the hours to a text document on the server
-$scope.httpPost = function () {
-    //console.log("prepost");
-    $http.post('php/setdata.php', JSON.stringify($scope.hours))
-        .error(function (status) { console.log(status); });
-    //console.log("postpost");
-    alert("Hours Saved");
-};
-//This function resets the data then saves the cleared data to the server
-$scope.clearHours = function () {
-    //reset all of the values
-    var clear = new Date("1970-01-01T08:00:00"),
-        i = 0;
-    for (i = $scope.hours.length - 1; i >= 0; i -= 1) {
-        $scope.hours[i].wout = clear;
-        $scope.hours[i].win  = clear;
-        $scope.hours[i].lin  = clear;
-        $scope.hours[i].lout = clear;
-    }
-    //post to the server
-    $http.post('php/setdata.php', JSON.stringify($scope.hours))
-        .error(function (status) { console.log(status); });
-    alert("Hours Cleared and Saved");
-};*/
+    /*factory.loadHours = function () {
+        $http.get("php/getdata.php")
+            .success(function (data) {
+                var i = 0,
+                    hours = [];
+                for (i = data.length - 1; i >= 0; i -= 1) {
+                    data[i].win.slice(0, -5);
+                    data[i].win  = new Date(data[i].win);
+                    data[i].lout.slice(0, -5);
+                    data[i].lout = new Date(data[i].lout);
+                    data[i].lin.slice(0, -5);
+                    data[i].lin  = new Date(data[i].lin);
+                    data[i].wout.slice(0, -5);
+                    data[i].wout = new Date(data[i].wout);
+                    //console.log(data[i]);
+                }
+                hours = data;
+                //console.log(hours);
+            }).error(function () {
+                console.log("An unexpected error ocurred!");
+            });
+    };
+    //This function saves the hours to a text document on the server
+    factory.httpPost = function (hours) {
+        //console.log("post starts");
+        $http.post('php/setdata.php', JSON.stringify(hours))
+            .error(function (status) {
+                console.log(status);
+            });
+        //console.log("post finished");
+        console.log("Hours Saved");
+    };
+    //This function resets the data then saves the cleared data to the server
+    factory.clearHours = function () {
+        //post to the server
+        $http.post('php/setdata.php', JSON.stringify(window.hours))
+            .error(function (status) {
+                console.log(status);
+            });
+        console.log("Hours Cleared and Saved");
+    };*/
