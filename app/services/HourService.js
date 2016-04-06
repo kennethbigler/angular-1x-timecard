@@ -105,7 +105,8 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
 		    timeEntry = 0,
             days = 0,
             workdays = 0,
-            i = 0;
+            i = 0,
+            temp = 0;
 
 		for (i = 0; i < hours.length; i += 1) {
 			timeEntry = (hours[i].wout - hours[i].win) - (hours[i].lin - hours[i].lout);
@@ -134,14 +135,19 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
 						pay.overtime += timeEntry;
 					}
 				}
+                if (pay.regular > 40) {
+                    temp = pay.regular - 40;
+                    pay.overtime += temp;
+                    pay.regular = 40;
+                }
 				workdays = 0;
 				days = 0;
 				continue;
 			}
 			/* overtime logic:
-			 *	If you worked more than 8 hours in a day it is overtime
+			 *  If you worked more than 40 hours in a week it is overtime
+             *	If you worked more than 8 hours in a day it is overtime
 			 *	If you worked more than 12 hours in a day it is double time
-             *  If you worked more than 40 hours in a week it is overtime --- TO BE ADDED!!!
 			 *	All else is regular time
 			 */
 			if (timeEntry <= 8) {
