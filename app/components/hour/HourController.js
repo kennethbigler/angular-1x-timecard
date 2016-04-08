@@ -14,6 +14,7 @@ app.controller('HourController', ["$scope", "HourService", "$location", function
     // set remove and update functions
     $scope.clearLunch = function () {
 		$HS.clearLunch($scope.hours);
+        $scope.calculate();
 	};
 	$scope.clearHours = function () {
 		$HS.clearHours();
