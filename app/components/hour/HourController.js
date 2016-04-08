@@ -1,6 +1,6 @@
 /*global app, $ */
 // ----------------------------------     Controller    ---------------------------------------- //
-app.controller('HourController', ["$scope", "HourService", function ($scope, $HS) {
+app.controller('HourController', ["$scope", "HourService", "$location", function ($scope, $HS, $location) {
     "use strict";
 // ---------------------------------     IO Functions    --------------------------------------- //
     // get today's date
@@ -12,6 +12,9 @@ app.controller('HourController', ["$scope", "HourService", function ($scope, $HS
 	$scope.k401 = $HS.k401();
     $scope.tsla = $HS.getQ();
     // set remove and update functions
+    $scope.clearLunch = function () {
+		$HS.clearLunch($scope.hours);
+	};
 	$scope.clearHours = function () {
 		$HS.clearHours();
 	};
@@ -22,6 +25,13 @@ app.controller('HourController', ["$scope", "HourService", function ($scope, $HS
 		$scope.pay = $HS.calculate($scope.hours, $scope.k401, $scope.payrate);
 	};
     $scope.calculate();
+    
+    // set a tab as the active tab
+    $scope.getClass = function (path) {
+        if ($location.path() === path) {
+            return 'active';
+        } else { return ''; }
+    };
     
     // close the navigation
     $scope.closeNav = function () { $("#navbar").collapse('hide'); };

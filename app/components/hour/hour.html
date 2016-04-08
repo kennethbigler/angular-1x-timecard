@@ -18,18 +18,18 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Total</th>
                         <th>Regular</th>
                         <th>Overtime</th>
-                        <th>Tax Hours</th>
+                        <th>Double</th>
+                        <th>Meal Premium</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ pay.total    | number:2 | number }} hours</td>
                         <td>{{ pay.regular  | number:2 | number }} hours</td>
                         <td>{{ pay.overtime | number:2 | number }} hours</td>
-                        <td>{{ pay.taxh     | number:2 | number }} hours</td>
+                        <td>{{ pay.double   | number:2 | number }} hours</td>
+                        <td>{{ pay.mealp    | number:2 | number }} hours</td>
                     </tr>
                 </tbody>
                 <thead>
@@ -55,6 +55,7 @@
     <div class="col-lg-2 col-md-3 col-sm-3">
         <button ng-click="saveHours()" class="btn btn-danger btn-lg btn-block">Save Hours</button>
         <button ng-click="clearHours()" class="btn btn-danger btn-lg btn-block">Clear Hours</button>
+        <button ng-click="clearLunch()" class="btn btn-danger btn-lg btn-block">Clear Lunch</button>
         <!-- Code for Stock Quote -->
         <div class="phonehide sideContent">
             <h3 class="sideHeader"><a href="http://quote.yahoo.com/q?s=TSLA&amp;d=1d" target="_blank">Tesla Stock Quote</a></h3>

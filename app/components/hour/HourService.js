@@ -67,6 +67,16 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
         return k;
     };
     
+    factory.clearLunch = function (hours) {
+		var i = 0;
+        for (i = 0; i < hours.length; i += 1) {
+            hours[i].lout = window.hours[i].lout;
+            hours[i].lin = window.hours[i].lin;
+        }
+        $localstorage.putObject('hours', hours);
+		window.location.reload();
+	};
+    
     factory.clearHours = function () {
 		$localstorage.remove('hours');
         $localstorage.remove('payrate');
@@ -93,54 +103,63 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
 	factory.calculate = function (hours, k401, payrate) {
         var
             pay = {
-                overtime:	0,
                 regular:	0,
-                taxh:		0,
+                overtime:	0,
+                double:     0,
                 gross:		0,
                 paycheck:	0,
                 tax:		0,
                 k401:		0,
-                total:      0
+                mealp:      0
             },
 		    timeEntry = 0,
             days = 0,
-            workdays = 0,
+            workDays = 0,
+            weekHours = 0,
+            block1 = 0,
+            block2 = 0,
             i = 0,
             temp = 0;
 
 		for (i = 0; i < hours.length; i += 1) {
-			timeEntry = (hours[i].wout - hours[i].win) - (hours[i].lin - hours[i].lout);
+            block1 = hours[i].lout - hours[i].win;
+            block2 = hours[i].wout - hours[i].lin;
 			// compensate for minutes        (/ 60)
 			// compensate for seconds        (/ 60)
 			// compensate for milliseconds   (/ 1,000)
 			// total                         (/ 3,600,000)
-			timeEntry = timeEntry / 3600000;
-			// add to days and calculate total
+            block1 /= 3600000;
+            block2 /= 3600000;
+            timeEntry = block1 + block2;
+			// add to days and calculate work week hours
             days += 1;
 			if (timeEntry > 0) {
-                pay.total += timeEntry;
-				workdays += 1;
+				workDays += 1;
+                weekHours += timeEntry;
 			} else { continue; }
-
+            // check for meal premiums (working 6+ hours with no lunch break)
+            if (block1 >= 6 || block2 >= 6) {
+                pay.mealp += 1;
+            }
             /* overtime logic:
 			 *  If you worked 7 days in a week, the 7th day is overtime
 			 *  If you worked anything over 8 hours on the 7th day it is double time
 			 */
 			if (days === 7) {
-				if (workdays === 7) {
+				if (workDays === 7) {
 					if (timeEntry > 8) {
-						pay.overtime += (timeEntry - 8) * (4 / 3);
+						pay.double += timeEntry - 8;
 						pay.overtime += 8;
 					} else {
 						pay.overtime += timeEntry;
 					}
 				}
-                if (pay.regular > 40) {
-                    temp = pay.regular - 40;
+                if (weekHours > 40) {
+                    temp = weekHours - 40;
                     pay.overtime += temp;
-                    pay.regular = 40;
                 }
-				workdays = 0;
+				workDays = 0;
+                weekHours = 0;
 				days = 0;
 				continue;
 			}
@@ -150,26 +169,20 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
 			 *	If you worked more than 12 hours in a day it is double time
 			 *	All else is regular time
 			 */
-			if (timeEntry <= 8) {
-				pay.regular += timeEntry;
-			} else if (timeEntry > 8 && timeEntry <= 12) {
-				pay.regular += 8;
-                pay.overtime += (timeEntry - 8);
+            pay.regular += timeEntry;
+			if (timeEntry > 8 && timeEntry <= 12) {
+                pay.overtime += timeEntry - 8;
 			} else if (timeEntry > 12) {
-				pay.regular += 8;
                 pay.overtime += 4;
-				pay.overtime += (timeEntry - 12) * (4 / 3);
+				pay.double += timeEntry - 12;
 			}
 		}
-		// overtime should be 1.5x pay, so I added overtime x 0.5
-		pay.gross = (pay.total + (pay.overtime * 0.5)) * payrate;
-		//as calculated online, paycheck is ~78% of gross pay
+		// final calculations of pay
+		pay.gross = (pay.regular + (pay.overtime * 0.5) + pay.double + pay.mealp) * payrate;
 		pay.k401 = pay.gross * (k401 / 100);
-        pay.paycheck = (pay.gross - pay.k401) * 0.78;
-		pay.tax = (pay.gross - pay.k401) * 0.22;
-		
-		//hours worked for the government
-		pay.taxh = pay.tax / payrate;
+        // as calculated online, paycheck is ~78% of gross pay - 401k
+        pay.tax = (pay.gross - pay.k401) * 0.22;
+        pay.paycheck = pay.gross - pay.k401 - pay.tax;
         
         return pay;
 	};
