@@ -74,7 +74,7 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
             hours[i].lin = window.hours[i].lin;
         }
         $localstorage.putObject('hours', hours);
-		//window.location.reload();
+		window.location.reload();
 	};
     
     factory.clearHours = function () {
