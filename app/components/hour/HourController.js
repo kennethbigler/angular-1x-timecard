@@ -1,4 +1,4 @@
-/*global app, console */
+/*global app, $ */
 // ----------------------------------     Controller    ---------------------------------------- //
 app.controller('HourController', ["$scope", "HourService", function ($scope, $HS) {
     "use strict";
@@ -22,6 +22,9 @@ app.controller('HourController', ["$scope", "HourService", function ($scope, $HS
 		$scope.pay = $HS.calculate($scope.hours, $scope.k401, $scope.payrate);
 	};
     $scope.calculate();
+    
+    // close the navigation
+    $scope.closeNav = function () { $("#navbar").collapse('hide'); };
     
 // ---------------------------------     Auto Update Quote    ----------------------------------- //
 	// save data to local storage every 60 seconds

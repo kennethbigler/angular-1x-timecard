@@ -1,5 +1,5 @@
 /*global angular*/
-var app = angular.module('myApp', []);
+var app = angular.module('myApp', ['ngRoute']);
 // -----------------------------------     Filters    ------------------------------------------ //
 app.filter('floor', function () {
     "use strict";

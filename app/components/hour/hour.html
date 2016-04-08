@@ -1,0 +1,95 @@
+<header></header>
+<!-- Top Section -->
+<div class="row" ng-cloak>
+    <!-- Left Top Column -->
+    <div class="col-lg-10 col-md-9 col-sm-9">
+        <div class="mainContent">
+            <h3 class="mainHeader">Summary</h3>
+            <div class="form-group">
+                <label class="control-label col-md-2 col-sm-3" for="payrate">Hourly Rate:</label>
+                <div class="col-md-10 col-sm-9">
+                    <input type="number" id="payrate" class="form-control" placeholder="$10/hour" ng-model="payrate">
+                </div>
+                <label class="control-label col-md-2 col-sm-3" for="k401">401K (%):</label>
+                <div class="col-md-10 col-sm-9">
+                    <input type="number" id="k401" class="form-control" placeholder="4%" ng-model="k401">
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Total</th>
+                        <th>Regular</th>
+                        <th>Overtime</th>
+                        <th>Tax Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ pay.total    | number:2 | number }} hours</td>
+                        <td>{{ pay.regular  | number:2 | number }} hours</td>
+                        <td>{{ pay.overtime | number:2 | number }} hours</td>
+                        <td>{{ pay.taxh     | number:2 | number }} hours</td>
+                    </tr>
+                </tbody>
+                <thead>
+                    <tr>
+                        <th>Gross Pay</th>
+                        <th>Paycheck</th>
+                        <th>401k</th>
+                        <th>Taxes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>${{ pay.gross    | number:2 }}</td>
+                        <td>${{ pay.paycheck | number:2 }}</td>
+                        <td>${{ pay.k401     | number:2 }}</td>
+                        <td>${{ pay.tax      | number:2 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div><!-- /Left Top Column -->
+    <!-- Side Column -->
+    <div class="col-lg-2 col-md-3 col-sm-3">
+        <button ng-click="saveHours()" class="btn btn-danger btn-lg btn-block">Save Hours</button>
+        <button ng-click="clearHours()" class="btn btn-danger btn-lg btn-block">Clear Hours</button>
+        <!-- Code for Stock Quote -->
+        <div class="phonehide sideContent">
+            <h3 class="sideHeader"><a href="http://quote.yahoo.com/q?s=TSLA&amp;d=1d" target="_blank">Tesla Stock Quote</a></h3>
+            <div class="minilink" align="center">
+            TSLA:&nbsp; <b>${{ tsla.total | number:2 }}</b>&nbsp; 
+            (<span ng-style='tsla.color'><b>{{ tsla.change | number:2 }},&nbsp;{{ tsla.change / tsla.total * 100 | number:2 }}%</b></span>)
+        </div>
+            <div class="minilink" align="center"></div>
+        </div>
+    </div><!-- Side Column -->
+</div><!-- /Top Section -->
+<!---------------------------------------------------------------------------------------------------->
+<!-- Hours Logging -->
+<div class="mainContent">
+    <h3 class="mainHeader">Report Your Hours</h3>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Arrive</th>
+                <th class="phonehide">Lunch Start</th>
+                <th class="phonehide">Lunch End</th>
+                <th>Depart</th>
+                <th class="phonehide">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="info in hours track by $index">
+                <td>{{ info.name }}</td>
+                <td><input type="time" class="form-control" name="input" ng-model="info.win" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td class="phonehide"><input type="time" class="form-control" name="input" ng-model="info.lout" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td class="phonehide"><input type="time" class="form-control" name="input" ng-model="info.lin" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td><input type="time" class="form-control" name="input" ng-model="info.wout" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td class="phonehide">{{ ((info.wout - info.win) - (info.lin - info.lout)) / 3600000 | number:2 | number }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div><!-- /Hours Logging -->

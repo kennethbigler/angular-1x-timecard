@@ -52,7 +52,7 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
     
     factory.payrate = function () {
         var p = $localstorage.getObject('payrate');
-        console.log(p);
+        //console.log(p);
         if (isNaN(p)) {
             return 10;
         }
@@ -78,7 +78,7 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
 		$localstorage.put('payrate', p);
         $localstorage.put('k401', k);
         $localstorage.putObject('hours', h);
-		console.log("hours saved");
+		//console.log("hours saved");
 	};
     
 // --------------------------------     Calculations     ---------------------------------------- //
