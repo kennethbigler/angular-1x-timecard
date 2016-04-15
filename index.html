@@ -11,20 +11,20 @@
     <title>Timecard</title>
     <script type="text/javascript">
     [
-        'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+        'https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js',
         'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
-        'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js',
-        'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.min.js',
+        'https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js',
+        'https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-route.min.js',
         'app/app.modules.js',
         'app/app.routes.js',
         'app/components/hour/HourController.js',
         'app/components/hour/HourService.js',
         'assets/js/hours.js'
     ].forEach(function(src) {
-        var script = document.createElement('script');
-        script.src = src;
-        script.async = false; 
-        document.head.appendChild(script);
+        var s = document.createElement('script');
+        s.src = src;
+        s.async = false; 
+        document.head.appendChild(s);
     });
     </script>
 </head>
@@ -33,7 +33,7 @@
 <div></div>
 <!-- Style Sheets -->
 <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans'/>
-<link rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <link rel="stylesheet" type='text/css' href='assets/css/mystyles.css'/>
 <link rel='stylesheet' type='text/css' href='assets/css/phonestyles.css' media='screen and (max-width: 432px)'/>
 <!-- Content Start -->
