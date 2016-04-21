@@ -3,7 +3,7 @@
 
 // ----------------------------------     Service    ---------------------------------------- //
 // old functions require '$http' to be passed in as well, replaced by '$localstorage'
-app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, $quote) {
+app.factory('HourService', ["$localstorage", "$quote", function ($storage, $quote) {
     "use strict";
     var factory = {};
 
@@ -13,7 +13,7 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
     };
     
     factory.hours = function () {
-        var hours = $localstorage.getObject('hours'),
+        var hours = $storage.getObject('hours'),
             i = 0;
         // check if the local data exists
         if (Object.keys(hours).length !== 0) {
@@ -51,7 +51,7 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
     };
     
     factory.payrate = function () {
-        var p = $localstorage.getObject('payrate');
+        var p = $storage.getObject('payrate');
         //console.log(p);
         if (isNaN(p)) {
             return 10;
@@ -60,7 +60,7 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
     };
     
     factory.k401 = function () {
-        var k = $localstorage.getObject('k401');
+        var k = $storage.getObject('k401');
         if (isNaN(k)) {
             return 4;
         }
@@ -73,21 +73,21 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
             hours[i].lout = window.hours[i].lout;
             hours[i].lin = window.hours[i].lin;
         }
-        $localstorage.putObject('hours', hours);
+        $storage.putObject('hours', hours);
 		//window.location.reload();
 	};
     
     factory.clearHours = function () {
-		$localstorage.remove('hours');
-        $localstorage.remove('payrate');
-        $localstorage.remove('k401');
+		$storage.remove('hours');
+        $storage.remove('payrate');
+        $storage.remove('k401');
 		window.location.reload();
 	};
     
 	factory.saveHours = function (p, k, h) {
-		$localstorage.put('payrate', p);
-        $localstorage.put('k401', k);
-        $localstorage.putObject('hours', h);
+		$storage.put('payrate', p);
+        $storage.put('k401', k);
+        $storage.putObject('hours', h);
 		//console.log("hours saved");
 	};
     
@@ -137,8 +137,8 @@ app.factory('HourService', ["$localstorage", "$quote", function ($localstorage, 
 				workDays += 1;
                 weekHours += timeEntry;
 			} else { continue; }
-            // check for meal premiums (working 6+ hours with no lunch break)
-            if (block1 >= 6 || block2 >= 6) {
+            // check for meal premiums (working 5+ hours with no lunch break in a 6+ hour work day)
+            if ((block1 >= 5 || block2 >= 5) && timeEntry >= 6) {
                 pay.mealp += 1;
             }
             /* overtime logic:
