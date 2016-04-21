@@ -138,7 +138,10 @@ app.factory('HourService', ["$localstorage", "$quote", function ($storage, $quot
                 weekHours += timeEntry;
 			} else { continue; }
             // check for meal premiums (working 5+ hours with no lunch break in a 6+ hour work day)
-            if ((block1 >= 5 || block2 >= 5) && timeEntry >= 6) {
+            if (block1 >= 5 && timeEntry >= 6) {
+                pay.mealp += 1;
+            }
+            if (block2 >= 5 && timeEntry >= 6) {
                 pay.mealp += 1;
             }
             /* overtime logic:
