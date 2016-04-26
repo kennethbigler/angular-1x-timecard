@@ -1,14 +1,14 @@
 /*global angular*/
-var app = angular.module('hourApp', ['ngRoute']);
+var hourApp = angular.module('hourApp', ['ngRoute']);
 // -----------------------------------     Filters    ------------------------------------------ //
-app.filter('floor', function () {
+hourApp.filter('floor', function () {
     "use strict";
     return function (n) { return Math.floor(n); };
 });
 
 // -----------------------------------     Services    ----------------------------------------- //
 // Yahoo Finance API
-app.factory('$quote', ["$http", function ($http) {
+hourApp.factory('$quote', ["$http", function ($http) {
     "use strict";
     
     // prepare the object for return
@@ -46,7 +46,7 @@ app.factory('$quote', ["$http", function ($http) {
 }]);
 
 // use HTML5 local storage
-app.factory('$localstorage', ['$window', function ($window) {
+hourApp.factory('$localstorage', ['$window', function ($window) {
     'use strict';
     return {
         put: function (key, value) {

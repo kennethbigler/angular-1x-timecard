@@ -1,9 +1,9 @@
 /*jslint continue:true */
-/*global console, app */
+/*global console, hourApp */
 
 // ----------------------------------     Service    ---------------------------------------- //
 // old functions require '$http' to be passed in as well, replaced by '$localstorage'
-app.factory('HourService', ["$localstorage", "$quote", function ($storage, $quote) {
+hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $quote) {
     "use strict";
     var factory = {};
 

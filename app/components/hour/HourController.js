@@ -1,6 +1,6 @@
-/*global app, $ */
+/*global hourApp, $ */
 // ----------------------------------     Controller    ---------------------------------------- //
-app.controller('HourController', ["$scope", "HourService", "$location", function ($scope, $HS, $location) {
+hourApp.controller('HourController', ["$scope", "HourService", "$location", function ($scope, $HS, $location) {
     "use strict";
 // ---------------------------------     IO Functions    --------------------------------------- //
     // get today's date
