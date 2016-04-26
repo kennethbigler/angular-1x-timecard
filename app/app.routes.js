@@ -1,6 +1,6 @@
-/*global app*/
+/*global hourApp*/
 
-app.config(function ($routeProvider) {
+hourApp.config(function ($routeProvider) {
     "use strict";
     $routeProvider
         .when('/', {
