@@ -1,5 +1,5 @@
 /*global angular*/
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('hourApp', ['ngRoute']);
 // -----------------------------------     Filters    ------------------------------------------ //
 app.filter('floor', function () {
     "use strict";
