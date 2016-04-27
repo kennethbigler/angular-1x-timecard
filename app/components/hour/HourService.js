@@ -1,8 +1,7 @@
 /*jslint continue:true */
 /*global console, hourApp */
 
-// ----------------------------------     Service    ---------------------------------------- //
-// old functions require '$http' to be passed in as well, replaced by '$localstorage'
+// io to txt file requires '$http', replaced by '$localstorage'
 hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $quote) {
     "use strict";
     var factory = {};
@@ -19,40 +18,31 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
         if (Object.keys(hours).length !== 0) {
             /* Required Format: 2014-03-08T00:00:00
              * Server Format:   1970-01-01T20:00:00.000Z
-             * This function prepares the data by:
-             *  - trimming last 5 characters from data ('.000Z')
-             *  - putting data in the proper Date format (rather than string)
-             */
+             *  trims last 5 characters from data ('.000Z')
+             *  converts data from string to Date format    */
             for (i = hours.length - 1; i >= 0; i -= 1) {
-                if (hours[i].win !== null) {
-                    hours[i].win.slice(0, -5);
-                    hours[i].win = new Date(hours[i].win);
+                if (hours[i].win) {
+                    hours[i].win = new Date(hours[i].win.slice(0, -5));
                 }
-                if (hours[i].lout !== null) {
-                    hours[i].lout.slice(0, -5);
-                    hours[i].lout = new Date(hours[i].lout);
+                if (hours[i].lout) {
+                    hours[i].lout = new Date(hours[i].lout.slice(0, -5));
                 }
-                if (hours[i].lin !== null) {
-                    hours[i].lin.slice(0, -5);
-                    hours[i].lin = new Date(hours[i].lin);
+                if (hours[i].lin) {
+                    hours[i].lin = new Date(hours[i].lin.slice(0, -5));
                 }
-                if (hours[i].wout !== null) {
-                    hours[i].wout.slice(0, -5);
-                    hours[i].wout = new Date(hours[i].wout);
+                if (hours[i].wout) {
+                    hours[i].wout = new Date(hours[i].wout.slice(0, -5));
                 }
             }
-            //console.log(hours);
         } else {
-            // if there was no hours data fill with default values
+            // if no hours yet fill with default values
             hours = window.hours;
-            //console.log(hours);
         }
         return hours;
     };
     
     factory.payrate = function () {
         var p = $storage.getObject('payrate');
-        //console.log(p);
         if (isNaN(p)) {
             return 10;
         }
@@ -74,7 +64,6 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
             hours[i].lin = window.hours[i].lin;
         }
         $storage.putObject('hours', hours);
-		//window.location.reload();
 	};
     
     factory.clearHours = function () {
@@ -85,21 +74,17 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
 	};
     
 	factory.saveHours = function (p, k, h) {
-		$storage.put('payrate', p);
-        $storage.put('k401', k);
+		$storage.put('payrate', parseInt(p, 10));
+        $storage.put('k401', parseInt(k, 10));
         $storage.putObject('hours', h);
 		//console.log("hours saved");
 	};
-    
-// --------------------------------     Calculations     ---------------------------------------- //
-	
 
 	/* This function calculates:
-	 *    the total hours worked and stores it in a global variable
-	 *    overtime based on CA State Law and returns that value
-	 *    grosspay based on payrate
-	 *    aproximate tax for CA employee in lower brackets
-	 */
+	 *     regular time, overtime, double time, and meal premiums
+     *     gross pay, paycheck, tax, and 401k
+     *     based on CA State Law assuming $28/hour
+	 *     returns object with calculated values                 */
 	factory.calculate = function (hours, k401, payrate) {
         var
             pay = {
@@ -124,10 +109,10 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
 		for (i = 0; i < hours.length; i += 1) {
             block1 = hours[i].lout - hours[i].win;
             block2 = hours[i].wout - hours[i].lin;
-			// compensate for minutes        (/ 60)
-			// compensate for seconds        (/ 60)
-			// compensate for milliseconds   (/ 1,000)
-			// total                         (/ 3,600,000)
+			// minutes      (/ 60)
+			// seconds      (/ 60)
+			// milliseconds (/ 1,000)
+			// total        (/ 3,600,000)
             block1 /= 3600000;
             block2 /= 3600000;
             timeEntry = block1 + block2;
@@ -146,8 +131,7 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
             }
             /* overtime logic:
 			 *  If you worked 7 days in a week, the 7th day is overtime
-			 *  If you worked anything over 8 hours on the 7th day it is double time
-			 */
+			 *  If you worked anything over 8 hours on the 7th day it is double time */
 			if (days === 7) {
 				if (workDays === 7) {
 					if (timeEntry > 8) {
@@ -169,9 +153,7 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
 			/* overtime logic:
 			 *  If you worked more than 40 hours in a week it is overtime
              *	If you worked more than 8 hours in a day it is overtime
-			 *	If you worked more than 12 hours in a day it is double time
-			 *	All else is regular time
-			 */
+			 *	If you worked more than 12 hours in a day it is double time */
             pay.regular += timeEntry;
 			if (timeEntry > 8 && timeEntry <= 12) {
                 pay.overtime += timeEntry - 8;
