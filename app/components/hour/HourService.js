@@ -41,6 +41,7 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
         return hours;
     };
     
+    // get the payrate from localstorage or return 10
     factory.payrate = function () {
         var p = $storage.getObject('payrate');
         if (isNaN(p)) {
@@ -49,6 +50,7 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
         return p;
     };
     
+    // get the 401k percentage from localstorage or return 10
     factory.k401 = function () {
         var k = $storage.getObject('k401');
         if (isNaN(k)) {
@@ -57,6 +59,7 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
         return k;
     };
     
+    // set the lunch hours to empty
     factory.clearLunch = function (hours) {
 		var i = 0;
         for (i = 0; i < hours.length; i += 1) {
@@ -66,13 +69,13 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
         $storage.putObject('hours', hours);
 	};
     
+    // remove the hours from localstorage
     factory.clearHours = function () {
 		$storage.remove('hours');
-        $storage.remove('payrate');
-        $storage.remove('k401');
-		window.location.reload();
+        window.location.reload();
 	};
     
+    // save all values to localstorage
 	factory.saveHours = function (p, k, h) {
 		$storage.put('payrate', parseInt(p, 10));
         $storage.put('k401', parseInt(k, 10));
@@ -86,7 +89,13 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
      *     based on CA State Law assuming $28/hour
 	 *     returns object with calculated values                 */
 	factory.calculate = function (hours, k401, payrate) {
-        var
+        var i = 0,
+            timeEntry = 0,
+            days = 0,
+            workDays = 0,
+            weekHours = 0,
+            block1 = 0,
+            block2 = 0,
             pay = {
                 regular:	0,
                 overtime:	0,
@@ -96,15 +105,7 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
                 tax:		0,
                 k401:		0,
                 mealp:      0
-            },
-		    timeEntry = 0,
-            days = 0,
-            workDays = 0,
-            weekHours = 0,
-            block1 = 0,
-            block2 = 0,
-            i = 0,
-            temp = 0;
+            };
 
 		for (i = 0; i < hours.length; i += 1) {
             block1 = hours[i].lout - hours[i].win;
@@ -121,7 +122,9 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
 			if (timeEntry > 0) {
 				workDays += 1;
                 weekHours += timeEntry;
-			} else { continue; }
+			} else {
+                continue;
+            }
             // check for meal premiums (working 5+ hours with no lunch break in a 6+ hour work day)
             if (block1 >= 5 && timeEntry >= 6) {
                 pay.mealp += 1;
@@ -142,8 +145,7 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
 					}
 				}
                 if (weekHours > 40) {
-                    temp = weekHours - 40;
-                    pay.overtime += temp;
+                    pay.overtime += (weekHours - 40);
                 }
 				workDays = 0;
                 weekHours = 0;
@@ -176,26 +178,31 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
 }]);
 
 // --------------------------------     IO to a txt file    -------------------------------------- //
-    /*factory.loadHours = function () {
+/*  factory.loadHours = function () {
         $http.get("php/getdata.php")
             .success(function (data) {
                 var i = 0,
-                    hours = [];
+                hours = [];
                 for (i = data.length - 1; i >= 0; i -= 1) {
-                    data[i].win.slice(0, -5);
-                    data[i].win  = new Date(data[i].win);
-                    data[i].lout.slice(0, -5);
-                    data[i].lout = new Date(data[i].lout);
-                    data[i].lin.slice(0, -5);
-                    data[i].lin  = new Date(data[i].lin);
-                    data[i].wout.slice(0, -5);
-                    data[i].wout = new Date(data[i].wout);
-                    //console.log(data[i]);
+                    if (data[i].win) {
+                        data[i].win = new Date(data[i].win.slice(0, -5));
+                    }
+                    if (data[i].lout) {
+                        data[i].lout = new Date(data[i].lout.slice(0, -5));
+                    }
+                    if (data[i].lin) {
+                        data[i].lin = new Date(data[i].lin.slice(0, -5));
+                    }
+                    if (data[i].wout) {
+                        data[i].wout = new Date(data[i].wout.slice(0, -5));
+                    }
                 }
                 hours = data;
                 //console.log(hours);
+                return hours;
             }).error(function () {
                 console.log("An unexpected error ocurred!");
+                return window.hours;
             });
     };
     //This function saves the hours to a text document on the server
