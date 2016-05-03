@@ -1,5 +1,5 @@
 /*global hourApp, $ */
-hourApp.controller('HourController', ["$scope", "HourService", "$location", function ($scope, $HS, $location) {
+hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$interval', '$timeout', function ($scope, $HS, $location, $interval, $timeout) {
     "use strict";
     // get today's date
 	$scope.date = new Date();
@@ -9,6 +9,7 @@ hourApp.controller('HourController', ["$scope", "HourService", "$location", func
 	$scope.payrate = $HS.payrate();
 	$scope.k401 = $HS.k401();
     $scope.tsla = $HS.getQ();
+    $scope.confirmSave = false;
     
     // saving hours functions
     $scope.clearLunch = function () {
@@ -20,6 +21,10 @@ hourApp.controller('HourController', ["$scope", "HourService", "$location", func
 	};
 	$scope.saveHours = function () {
         $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
+        $scope.confirmSave = true;
+        $timeout(function () {
+            $scope.confirmSave = true;
+        }, 2000);
 	};
     
     // dynamically update data
@@ -39,10 +44,11 @@ hourApp.controller('HourController', ["$scope", "HourService", "$location", func
     $scope.closeNav = function () { $("#navbar").collapse('hide'); };
     
 	// save data to local storage every 60 seconds
-	setInterval(function () {
+	$interval(function () {
 		$scope.$apply(function () {
 			$scope.saveHours();
             $scope.tsla = $HS.getQ();
+            console.log("i");
 		});
 	}, 60000);
 }]);
