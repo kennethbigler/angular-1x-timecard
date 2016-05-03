@@ -22,10 +22,10 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
 	$scope.saveHours = function () {
         $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
         $scope.confirmSave = true;
-        console.log("saved");
         $timeout(function () {
             $scope.confirmSave = false;
-        }, 2000);
+        }, 10000);
+        console.log("saved");
 	};
     
     // dynamically update data
@@ -48,6 +48,5 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
 	$interval(function () {
         $scope.saveHours();
         $scope.tsla = $HS.getQ();
-        console.log("i");
 	}, 60000);
 }]);
