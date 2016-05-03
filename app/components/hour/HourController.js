@@ -9,7 +9,7 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
 	$scope.payrate = $HS.payrate();
 	$scope.k401 = $HS.k401();
     $scope.tsla = $HS.getQ();
-    $scope.confirmSave = false;
+    $scope.confirmSave = true;
     
     // saving hours functions
     $scope.clearLunch = function () {
@@ -22,9 +22,7 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
 	$scope.saveHours = function () {
         $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
         $scope.confirmSave = true;
-        $timeout(function () {
-            $scope.confirmSave = false;
-        }, 10000);
+        $timeout(function () { $scope.confirmSave = false; }, 10000);
         console.log("saved");
 	};
     
