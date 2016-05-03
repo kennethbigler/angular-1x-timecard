@@ -22,8 +22,9 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
 	$scope.saveHours = function () {
         $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
         $scope.confirmSave = true;
+        console.log("saved");
         $timeout(function () {
-            $scope.confirmSave = true;
+            $scope.confirmSave = false;
         }, 2000);
 	};
     
@@ -45,10 +46,8 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
     
 	// save data to local storage every 60 seconds
 	$interval(function () {
-		$scope.$apply(function () {
-			$scope.saveHours();
-            $scope.tsla = $HS.getQ();
-            console.log("i");
-		});
+        $scope.saveHours();
+        $scope.tsla = $HS.getQ();
+        console.log("i");
 	}, 60000);
 }]);
