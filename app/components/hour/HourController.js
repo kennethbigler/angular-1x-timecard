@@ -22,8 +22,25 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
 	$scope.saveHours = function () {
         $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
         $scope.confirmSave = true;
-        $timeout(function () { $scope.confirmSave = false; }, 10000);
+        var timer = $timeout(function () { $scope.confirmSave = false; }, 10000);
         console.log("saved");
+        
+        // Let's bind to the resolve/reject handlers of
+        // the timer promise so that we can make sure our
+        // cancel approach is actually working.
+        timer.then(
+            function () {
+                console.log("Timer resolved! ", Date.now());
+            },
+            function () {
+                console.log("Timer rejected! ", Date.now());
+            }
+        );
+        // When the DOM element is removed from the page,
+        // AngularJS will trigger the $destroy event on
+        // the scope. This gives us a chance to cancel any
+        // pending timer that we may have.
+        
 	};
     
     // dynamically update data
@@ -43,8 +60,15 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
     $scope.closeNav = function () { $("#navbar").collapse('hide'); };
     
 	// save data to local storage every 60 seconds
-	$interval(function () {
+	var myInterval = $interval(function () {
         $scope.saveHours();
         $scope.tsla = $HS.getQ();
 	}, 60000);
+    
+    $scope.$on(
+        "$destroy",
+        function (event) {
+            $timeout.cancel(myInterval);
+        }
+    );
 }]);
