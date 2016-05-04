@@ -4,8 +4,8 @@ hourApp.config(function ($routeProvider) {
     "use strict";
     $routeProvider
         .when('/', {
-            templateUrl: 'app/components/hour/hour.html',
-            controller: 'HourController'
+            templateUrl: 'app/components/hour/hour.html'//,
+            //controller: 'HourController'
         }).when('/shuttle', {
             templateUrl: 'app/components/shuttle/shuttle.html'
         }).otherwise({ redirectTo: '/' });
