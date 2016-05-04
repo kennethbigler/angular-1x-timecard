@@ -18,7 +18,7 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
         }
 	};
 	$scope.clearHours = function () {
-        if (confirm('Are claer all the hours?')) {
+        if (confirm('Are you sure you want to clear all the hours?')) {
 		  $HS.clearHours();
         }
 	};
