@@ -1,4 +1,4 @@
-/*global hourApp, console, $ */
+/*global hourApp, console, confirm, $ */
 hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$interval', '$timeout', function ($scope, $HS, $location, $interval, $timeout) {
     "use strict";
     // set up new variables
@@ -12,17 +12,21 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
     
     // saving hours functions
     $scope.clearLunch = function () {
-		$HS.clearLunch($scope.hours);
-        $scope.calculate();
+		if (confirm('Are you sure you want to clear all the lunches?')) {
+            $HS.clearLunch($scope.hours);
+            $scope.calculate();
+        }
 	};
 	$scope.clearHours = function () {
-		$HS.clearHours();
+        if (confirm('Are claer all the hours?')) {
+		  $HS.clearHours();
+        }
 	};
 	$scope.saveHours = function () {
         $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
         $scope.confirmSave = true;
         console.log($scope.confirmSave);
-        $timeout(function () { $scope.confirmSave = false; }, 2000, 1);
+        $timeout(function () { $scope.confirmSave = false; }, 2000);
 	};
     
     // dynamically update data
