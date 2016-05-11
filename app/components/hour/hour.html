@@ -88,10 +88,10 @@
         <tbody>
             <tr ng-repeat="info in hours track by $index">
                 <td>{{ info.name }}</td>
-                <td><input type="time" class="form-control" name="input" ng-model="info.win" placeholder="HH:mm" ng-change="calculate()"/></td>
-                <td class="phonehide"><input type="time" class="form-control" name="input" ng-model="info.lout" placeholder="HH:mm" ng-change="calculate()"/></td>
-                <td class="phonehide"><input type="time" class="form-control" name="input" ng-model="info.lin" placeholder="HH:mm" ng-change="calculate()"/></td>
-                <td><input type="time" class="form-control" name="input" ng-model="info.wout" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td><input type="time" class="form-control hoursInput" name="input" ng-model="info.win" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td class="phonehide"><input type="time" class="form-control hoursInput" name="input" ng-model="info.lout" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td class="phonehide"><input type="time" class="form-control hoursInput" name="input" ng-model="info.lin" placeholder="HH:mm" ng-change="calculate()"/></td>
+                <td><input type="time" class="form-control hoursInput" name="input" ng-model="info.wout" placeholder="HH:mm" ng-change="calculate()"/></td>
                 <td class="phonehide">{{ ((info.wout - info.win) - (info.lin - info.lout)) / 3600000 | number:2 | number }}</td>
             </tr>
         </tbody>
