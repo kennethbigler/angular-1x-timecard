@@ -132,6 +132,8 @@ div.mainContent {
     border: none !important;
     box-shadow: none !important;
     background-color: transparent !important;
+    height: auto !important;
+    cursor:text;
     padding: 0;
 }
 /********************\
