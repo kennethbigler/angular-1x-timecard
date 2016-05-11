@@ -132,6 +132,7 @@ div.mainContent {
     border: none !important;
     box-shadow: none !important;
     background-color: transparent !important;
+    padding: 0;
 }
 /********************\
         Header
