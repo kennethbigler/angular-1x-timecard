@@ -1,4 +1,4 @@
-/*global hourApp, console, confirm, $ */
+/*global hourApp, confirm, $ */
 hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$interval', '$timeout', function ($scope, $HS, $location, $interval, $timeout) {
     "use strict";
     // set up new variables
@@ -17,15 +17,16 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
             $scope.calculate();
         }
 	};
+    
 	$scope.clearHours = function () {
         if (confirm('Are you sure you want to clear all the hours?')) {
-		  $HS.clearHours();
+            $HS.clearHours();
         }
 	};
+    
 	$scope.saveHours = function () {
         $HS.saveHours($scope.payrate, $scope.k401, $scope.hours);
         $scope.confirmSave = true;
-        console.log($scope.confirmSave);
         $timeout(function () { $scope.confirmSave = false; }, 2000);
 	};
     
@@ -40,13 +41,11 @@ hourApp.controller('HourController', ['$scope', 'HourService', '$location', '$in
         $scope.saveHours();
         $scope.tsla = $HS.getQ();
 	}, 60000);
+    
     // stop intervals after scope is destroyed
-    $scope.$on(
-        "$destroy",
-        function (event) {
-            $interval.cancel(myInterval);
-        }
-    );
+    $scope.$on("$destroy", function (event) {
+        $interval.cancel(myInterval);
+    });
     
     // moved to a home controller later
     // set the active tab

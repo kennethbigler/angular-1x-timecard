@@ -1,5 +1,5 @@
 /*jslint continue:true */
-/*global console, hourApp */
+/*global hourApp */
 
 // io to txt file requires '$http', replaced by '$localstorage'
 hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $quote) {
@@ -80,7 +80,6 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
 		$storage.put('payrate', parseInt(p, 10));
         $storage.put('k401', parseInt(k, 10));
         $storage.putObject('hours', h);
-		//console.log("hours saved");
 	};
 
 	/* This function calculates:
@@ -198,29 +197,29 @@ hourApp.factory('HourService', ["$localstorage", "$quote", function ($storage, $
                     }
                 }
                 hours = data;
-                //console.log(hours);
+                //$log(hours);
                 return hours;
             }).error(function () {
-                console.log("An unexpected error ocurred!");
+                $log("An unexpected error ocurred!");
                 return window.hours;
             });
     };
     //This function saves the hours to a text document on the server
     factory.httpPost = function (hours) {
-        //console.log("post starts");
+        //$log("post starts");
         $http.post('php/setdata.php', JSON.stringify(hours))
             .error(function (status) {
-                console.log(status);
+                $log(status);
             });
-        //console.log("post finished");
-        console.log("Hours Saved");
+        //$log("post finished");
+        $log("Hours Saved");
     };
     //This function resets the data then saves the cleared data to the server
     factory.clearHours = function () {
         //post to the server
         $http.post('php/setdata.php', JSON.stringify(window.hours))
             .error(function (status) {
-                console.log(status);
+                $log(status);
             });
-        console.log("Hours Cleared and Saved");
+        $log("Hours Cleared and Saved");
     };*/
